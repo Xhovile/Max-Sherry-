@@ -1,0 +1,6 @@
+{
+  "name": "Max & Sherry Dine & Lounge",
+  "description": "Prestige digital home and interactve experience concept for Max & Sherry Dine & Lounge, Johannesburg. Includes interactive menu, events manager, luxurious storytelling, and an elegant admin dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
