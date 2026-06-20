@@ -96,7 +96,7 @@ export default function EventsView({ events, onBookEvent }: EventsViewProps) {
                       <MapPin className="w-4.5 h-4.5 text-[#D4AF37] shrink-0 mt-0.5" />
                       <div>
                         <span className="text-[#F5F5F5] uppercase tracking-widest text-[10px] font-semibold">{ev.venue}</span>
-                        <p className="text-[10px] text-[#B0B0B0] mt-0.5 font-light">Max & Sherry Dine & Lounge Estate, Rosebank</p>
+                        <p className="text-[10px] text-[#B0B0B0] mt-0.5 font-light">Max & Sherry Dine & Lounge Estate, Area 10, Lilongwe</p>
                       </div>
                     </div>
                   </div>

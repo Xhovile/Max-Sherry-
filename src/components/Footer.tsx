@@ -33,7 +33,7 @@ export default function Footer({ setActiveTab }: FooterProps) {
           </button>
           
           <p className="text-xs leading-relaxed">
-            Johannesburg’s pre-eminent culinary sanctuary. Melding modern luxury dining with supreme social lounge culture. Centered in Rosebank.
+            Lilongwe’s pre-eminent culinary sanctuary. Melding modern luxury dining with supreme social lounge culture. Centered in Area 10, Malawi.
           </p>
 
           {/* Social Icons */}
@@ -55,7 +55,7 @@ export default function Footer({ setActiveTab }: FooterProps) {
               <Facebook className="w-4.5 h-4.5" />
             </a>
             <a 
-              href="https://wa.me/27825554321?text=Hello%20Max%20%26%20Sherry%2C%20I'd%20love%20to%20inquire%20about%20booking%20a%20private%20lounge%20event." 
+              href="https://wa.me/265888123456?text=Hello%20Max%20%26%20Sherry%2C%20I'd%20love%20to%20inquire%20about%20booking%20a%20private%20lounge%20event." 
               target="_blank" 
               referrerPolicy="no-referrer"
               className="p-2.5 rounded-full bg-[#1A1A1A] hover:bg-emerald-500/10 hover:text-emerald-400 border border-[#242424] transition-all duration-300 flex items-center justify-center text-emerald-500"
@@ -95,15 +95,15 @@ export default function Footer({ setActiveTab }: FooterProps) {
           <ul className="space-y-4 text-xs">
             <li className="flex items-start space-x-3">
               <MapPin className="w-4.5 h-4.5 text-[#D4AF37] shrink-0 mt-0.5" />
-              <span>154 Keys Avenue, Rosebank, Johannesburg, 2196, South Africa</span>
+              <span>Sovereign Drive, Area 10, Lilongwe, Malawi</span>
             </li>
             <li className="flex items-center space-x-3">
               <Phone className="w-4.5 h-4.5 text-[#D4AF37]" />
-              <a href="tel:+27825554321" className="hover:text-[#F5F5F5] transition-colors">+27 (0) 82 555 4321</a>
+              <a href="tel:+265888123456" className="hover:text-[#F5F5F5] transition-colors">+265 (0) 888 123 456</a>
             </li>
             <li className="flex items-center space-x-3">
               <Mail className="w-4.5 h-4.5 text-[#D4AF37]" />
-              <a href="mailto:prestige@maxsherry.co.za" className="hover:text-[#F5F5F5] transition-colors">prestige@maxsherry.co.za</a>
+              <a href="mailto:prestige@maxsherry.co.mw" className="hover:text-[#F5F5F5] transition-colors">prestige@maxsherry.co.mw</a>
             </li>
           </ul>
         </div>
@@ -117,13 +117,13 @@ export default function Footer({ setActiveTab }: FooterProps) {
             {/* Elegant Map Backdrop Visualization */}
             <div className="absolute inset-0 bg-[#1A1A1A] flex flex-col items-center justify-center p-3 text-center">
               <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold mb-1">
-                Keys Avenue, Rosebank
+                Sovereign Drive, Area 10
               </span>
               <span className="text-[9px] text-[#B0B0B0] mb-2 leading-tight">
-                Steps away from Rosebank Mall & Art Galleries
+                Steps away from Presidential Boulevard Gardens
               </span>
               <a 
-                href="https://maps.google.com/?q=Keys+Avenue,+Rosebank,+Johannesburg"
+                href="https://maps.google.com/?q=Area+10,+Lilongwe,+Malawi"
                 target="_blank"
                 referrerPolicy="no-referrer"
                 className="text-[9px] uppercase tracking-widest text-[#1A1A1A] bg-[#D4AF37] font-medium px-3 py-1 hover:bg-[#F5F5F5] transition-all"

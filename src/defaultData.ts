@@ -2,160 +2,299 @@ import { MenuItem, Event, GalleryItem, Testimonial, HomepageContent } from './ty
 
 export const INITIAL_HOMEPAGE: HomepageContent = {
   heroTitle: "Fine Dining. Great Conversations. Memorable Experiences.",
-  heroHeadline: "An exquisite fusion of modern culinary mastery and an elite social lounge experience. Centered in Rosebank, Johannesberg.",
-  storyHeading: "Crafting Prestige Realities Since 2018",
-  storyText1: "Founded by visionary cultural pioneers Max and Sherry, Max & Sherry Dine & Lounge has re-defined the culinary topography of Johannesburg. Melding high-society opulence with authentic culinary craft, our venue serves as a sanctuary for those who understand that dining is an art form of connection.",
-  storyText2: "Every ingredient is meticulously sourced from sustainable local estates, and every cocktail tells a sensory narrative of luxury, culture, and absolute confidence. We invite you into a digital and physical home where prestige is default.",
+  heroHeadline: "An exquisite fusion of masterfully curated Malawian and International culinary arts, upscale lounge hospitality, and bespoke milestone setups. Centered in Area 10, Lilongwe, Malawi.",
+  storyHeading: "Crafting Milestones & Memories Since 2018",
+  storyText1: "Max & Sherry Dine and Lounge has completely redefined the upscale dining and leisure terrain of Lilongwe. Rooted in Area 10, our venue serves as a premium sanctuary for fine dining and relaxed loungers. We fuse deep Malawian heritage ingredients with modern international presentation to curate a sensory celebration that stays in memory.",
+  storyText2: "Whether you join us for date nights, anniversaries, corporate group briefings, or personalized pre-ordered preparations, we assure you of supreme hospitality, intimate configurations, and absolute privacy. At Max & Sherry, you are not merely ordering food; you are claiming a front seat in a legacy of human storytelling, community, and luxurious hospitality.",
   storyImage: "https://images.unsplash.com/photo-1485686531765-ba63b07845a7?auto=format&fit=crop&w=1200&q=80"
 };
 
 export const INITIAL_MENU: MenuItem[] = [
-  // Breakfasts
+  // Starters
   {
     id: "m_1",
-    name: "Cured Salmon Sovereign Benedict",
-    description: "Citrus-cured local ocean trout, soft-poached farm eggs, saffron-infused gold-leaf hollandaise on a toasted artisanal milk brioche.",
-    price: 245,
-    category: "breakfast",
-    image: "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80",
-    tags: ["Signature", "Gluten-Free Available"]
+    name: "Cream of Mushroom Soup",
+    description: "Rich and velvety forest mushroom purée, finished with fresh garden sprouts and fine white truffle essence.",
+    price: 85,
+    category: "starters",
+    image: "https://images.unsplash.com/photo-1547592165-e1d17fed6006?auto=format&fit=crop&w=800&q=80",
+    tags: ["Creamy", "Vegetarian"]
   },
   {
     id: "m_2",
-    name: "Truffle Forest Whipped Ricotta",
-    description: "Sautéed wild king oyster mushrooms, shaved winter black truffles, dynamic garlic confit cream, toasted whole-wheat rustic sourdough.",
-    price: 195,
-    category: "breakfast",
-    image: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=800&q=80",
-    tags: ["Vegetarian"]
+    name: "Cream of Vegetable Soup",
+    description: "Creamy simmered seasonal garden vegetables in a rich cream soup base, garnished with crunchy home-baked croutons.",
+    price: 80,
+    category: "starters",
+    image: "https://images.unsplash.com/photo-1476124369491-e7addf5db371?auto=format&fit=crop&w=800&q=80",
+    tags: ["Warm Comfort"]
   },
-  // Lunch
   {
     id: "m_3",
-    name: "A5 Wagyu Gold-Dust Sliders",
-    description: "Three succulent premium grade Wagyu blend patties, aged gruyère crown, bone marrow caramelized onion confit, black charcoal buns, hand-rubbed truffle shoestring frites.",
-    price: 320,
-    category: "lunch",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80",
-    isSignature: true,
-    tags: ["Best Seller", "Chef Passion"]
+    name: "Greek Salad Classic",
+    description: "Plump cherry tomatoes, crisp cucumber, red onion, kalamata olives, and block danish feta dressed in wild oregano and olive oil.",
+    price: 95,
+    category: "starters",
+    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    tags: ["Fresh", "Vegetarian"]
   },
   {
     id: "m_4",
-    name: "The Rosebank Garden Harvest Bowl",
-    description: "Heirloom purple baby carrots, red royal quinoa, fire-torched avocado, rich organic tahini orange emulsion, sand-toasted pine nuts.",
-    price: 180,
-    category: "lunch",
-    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
-    tags: ["Vegan", "Clean Living"]
+    name: "Tender Beef Salad",
+    description: "Pan-sliced seared prime beef tagliata over leafy rocket, shaved pecorino parmesan, pine nuts, and vintage white balsamic reduction.",
+    price: 140,
+    category: "starters",
+    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    tags: ["Premium Protein"]
   },
-  // Dinner
   {
     id: "m_5",
-    name: "Prime Tomahawk Sands Reserve",
-    description: "800g grand reserve dry-aged ribeye steak, flamed tableside, basted in double wood-smoked garlic gold butter, accompanied by triple-cooked handcut duck-fat chips.",
-    price: 980,
-    category: "dinner",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
-    isSignature: true,
-    tags: ["Tableside Show", "Prestige Cut"]
+    name: "Crispy Golden Onion Rings",
+    description: "Large hand-cut sweet onion hoops dipped in beer batter, cooked crisp, and served with a zesty garlic dip.",
+    price: 60,
+    category: "starters",
+    image: "https://images.unsplash.com/photo-1639024471283-2bc7b3c6a267?auto=format&fit=crop&w=800&q=80",
+    tags: ["Crispy Side"]
   },
   {
     id: "m_6",
-    name: "Karoo Herb Crust Lamb Cutlets",
-    description: "Rosemary & pistachio French-trimmed lamb cutlets, velvet-smooth orange sweet potato puree, organic baby leeks, reduction of deep ruby cabernet sauvignon.",
-    price: 440,
-    category: "dinner",
-    image: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=800&q=80",
-    tags: ["Local Heritage"]
+    name: "Lemon Fried Calamari",
+    description: "Lightly dusted Falkland calamari tubes and tentacles, shallow fried to perfection, served with garlic-herb dipping butter.",
+    price: 130,
+    category: "starters",
+    image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=800&q=80",
+    tags: ["Seafood Quick"]
   },
   {
     id: "m_7",
-    name: "Pan-Seared Saffron Cape Salmon",
-    description: "Crisp-skinned local salmon fillet, buttered samphire, sparkling Prosecco-velouté, delicate ocean foam, and Royal Baltic white sturgeon caviar crown.",
-    price: 395,
-    category: "dinner",
-    image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80",
-    isSignature: true,
-    tags: ["Caviar Touch"]
+    name: "Plated Mozzarella Sticks",
+    description: "Double panko-crumbed stretchy mozzarella batons fried golden brown, accompanied by spicy sweet plum plum dipping jam.",
+    price: 90,
+    category: "starters",
+    image: "https://images.unsplash.com/photo-1531749668029-2db88e4b76ce?auto=format&fit=crop&w=800&q=80",
+    tags: ["Cheesy", "Warm"]
   },
-  // Drinks
   {
     id: "m_8",
-    name: "The Smoked Golden Sherry Reserve",
-    description: "Aged Spanish Amontillado sherry, limited craft bourbon, essence of hand-expressed orange bitters, real edible 24K gold flakes, dramatic hollow hickory smoke dome reveal.",
-    price: 185,
-    category: "drinks",
-    image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80",
-    isSignature: true,
-    tags: ["Interactive Drama", "Max Signature"]
+    name: "Coriander Chicken Livers",
+    description: "Decadent poultry livers pan-sautéed in double butter, fresh coriander herb, garlic confit, and mild heritage piri-piri cream, served with warm flatbread.",
+    price: 110,
+    category: "starters",
+    image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80",
+    tags: ["Best Seller", "Sautéed Craft"]
   },
   {
     id: "m_9",
-    name: "Cold-Pressed Hibiscus Negroni",
-    description: "Inhouse floral-botanical gin, bitter orange Campari cold-fused with Hibiscus sabdariffa petals, sweet vermouth, dramatic cascading dry ice.",
-    price: 170,
-    category: "drinks",
-    image: "https://images.unsplash.com/photo-1574096079513-d8259312b785?auto=format&fit=crop&w=800&q=80",
-    tags: ["Botanical Science"]
+    name: "Flame Wings Peri-Peri",
+    description: "Succulent free-range chicken wings basted in our authentic house-secret hot Peri-Peri marinade, flame-cooked over red charcoal.",
+    price: 120,
+    category: "starters",
+    image: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=800&q=80",
+    tags: ["Spicy Touch"]
   },
-  // Specials
   {
     id: "m_10",
-    name: "Knysna Imperial Oyster Harmony",
-    description: "Half-dozen live coastal oysters on shaved glacier ice, customized wild lavender mignonette, cold-pressed green apple pearls, and lemon elderflower foam.",
-    price: 490,
-    category: "specials",
-    image: "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=800&q=80",
-    isSignature: true,
-    tags: ["Ocean Fresh"]
+    name: "Classic Prawn Cocktail",
+    description: "Poached wild-caught queen prawns on shredded crisp iceberg lettuce, drenched in premium brandy-infused house Marie Rose sauce.",
+    price: 150,
+    category: "starters",
+    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    tags: ["Sovereign Taste", "Heritage Classic"]
   },
   {
     id: "m_11",
-    name: "Moët & Chocolate Lava Valrhona",
-    description: "Seductive 72% dark artisan Valrhona chocolate cake, flowing hot liquid gold truffle core, served alongside vintage Moët & Chandon champagne sorbet.",
-    price: 210,
-    category: "specials",
+    name: "Zinziri Heritage Quail",
+    description: "Tender local quail slow-roasted with wild Malawian forest spices and glazed with raw organic mountain honey, lemon, and wild herbs.",
+    price: 180,
+    category: "starters",
+    image: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=800&q=80",
+    isSignature: true,
+    tags: ["Max & Sherry Signature", "Malawian Quail"]
+  },
+
+  // Main Courses
+  {
+    id: "m_12",
+    name: "Flame-Grilled Tomahawk Ribeye",
+    description: "Premium thick-cut ribeye steak on a long bone, hand-aged for 35 days, grilled over charcoal, accompanied by garlic herb butter and hand-cut duck-fat chips.",
+    price: 480,
+    category: "mains",
+    image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+    isSignature: true,
+    tags: ["Signature Steak", "Elite Cut"]
+  },
+  {
+    id: "m_13",
+    name: "Seared Lake Chambo Fillet",
+    description: "Freshly harvested Lake Malawi Chambo fish fillet, pan-seared in traditional species, tomatoes and onion relish, accompanied by maize meal or golden frites.",
+    price: 290,
+    category: "mains",
+    image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80",
+    isSignature: true,
+    tags: ["Local Heritage", "Fresh From Lake"]
+  },
+  {
+    id: "m_14",
+    name: "Rosemary Roasted Garlic Chicken",
+    description: "Succulent free-range half-chicken marinated in green rosemary, crushed garlic, and lemon, slow roasted to golden crispiness.",
+    price: 240,
+    category: "mains",
+    image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=800&q=80",
+    tags: ["Classic Roast"]
+  },
+  {
+    id: "m_15",
+    name: "Truffled Forest Gnocchi",
+    description: "Plump hand-rolled potato pasta tossed with forest wild oyster mushrooms, baby spinach, parmesan white cream sauce, and shaved black truffles.",
+    price: 220,
+    category: "mains",
+    image: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=800&q=80",
+    tags: ["Vegetarian Elite", "Pasta"]
+  },
+  {
+    id: "m_16",
+    name: "King Prawn Seabass Platter",
+    description: "Tender grilled queen prawns and pan-cooked local seabass fillet basted in lemon-garlic butter with wild rice.",
+    price: 395,
+    category: "mains",
+    image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80",
+    tags: ["Seafood Platter"]
+  },
+  {
+    id: "m_17",
+    name: "Spiced Sweet Potato Curry",
+    description: "Creamy rich coconut stew with Malawian curry spices, chickpeas, roasted sweet potato, served with toasted flatbread.",
+    price: 195,
+    category: "mains",
+    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    tags: ["Vegetarian", "Spiced"]
+  },
+  {
+    id: "m_18",
+    name: "Crisp Chicken Strips (Kids' Meal)",
+    description: "Junior portion of tender chicken breast strips in safe crispy crumbs with hand-cut French frites and sweet cream dipping.",
+    price: 95,
+    category: "mains",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80",
+    tags: ["Junior Dining"]
+  },
+
+  // Desserts
+  {
+    id: "m_19",
+    name: "Warm Chocolate Lava Cake",
+    description: "Molten rich dark chocolate Valrhona cake cooked to perfection, flowing liquid center, served with cold-churned vanilla bean ice cream.",
+    price: 110,
+    category: "desserts",
     image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80",
-    tags: ["Decadence"]
+    tags: ["Sweet Decadence"]
+  },
+  {
+    id: "m_20",
+    name: "Sherry Baked Custard",
+    description: "Velvety baked vanilla egg custard topped with caramelized sherry sugar coating and fresh garden berries.",
+    price: 90,
+    category: "desserts",
+    image: "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?auto=format&fit=crop&w=800&q=80",
+    tags: ["Custard Craft"]
+  },
+
+  // Beverages
+  {
+    id: "m_21",
+    name: "The Smoked Golden Sherry Reserve",
+    description: "Aged premium sherry, limited small-batch bourbon, expressed orange bitters, edible gold leaves, and hickory smoke dome reveal.",
+    price: 160,
+    category: "beverages",
+    image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80",
+    isSignature: true,
+    tags: ["Alcoholic", "Tableside Art"]
+  },
+  {
+    id: "m_22",
+    name: "Hibiscus Mint Pressed Botanical",
+    description: "Cold-pressed local hibiscus flower tea, double infused with fresh garden mint leaves and squeezed mountain lime.",
+    price: 65,
+    category: "beverages",
+    image: "https://images.unsplash.com/photo-1574096079513-d8259312b785?auto=format&fit=crop&w=800&q=80",
+    tags: ["Cold Tea", "Refreshing"]
+  },
+  {
+    id: "m_23",
+    name: "Warm Spiced Malawian Coffee",
+    description: "Single-origin luxury Malawian Arabica espresso roasted slow, finished with ground cinnamon, cardamom, and thick whipped cream.",
+    price: 55,
+    category: "beverages",
+    image: "https://images.unsplash.com/photo-1507133750040-4a8f57021571?auto=format&fit=crop&w=800&q=80",
+    tags: ["Hot Drink", "Local Beans"]
+  },
+  {
+    id: "m_24",
+    name: "Passionfruit Mint Cooler",
+    description: "Freshly muddled passionfruit pulp, fresh sweet mint, home-pressed lime juice, layered with chilled sparkling spring water.",
+    price: 75,
+    category: "beverages",
+    image: "https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=800&q=80",
+    tags: ["Soft Drink", "Muddled"]
+  },
+
+  // Specials (Lounge & Customized pre-orders)
+  {
+    id: "m_25",
+    name: "Custom pre-order Feast",
+    description: "Customized bespoke preparation of prestigious delicacies of your choosing, prepared upon 24-hour advance booking by Sherry's culinary team.",
+    price: 450,
+    category: "specials",
+    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
+    isSignature: true,
+    tags: ["Pre-Order only", "Custom Preparation"]
+  },
+  {
+    id: "m_26",
+    name: "Sherry's Cellar Wine Pairing Board",
+    description: "Artisanal cheeses, cured local cold cuts, paired perfectly with international wines and premium lounge cocktail flights.",
+    price: 320,
+    category: "specials",
+    image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=800&q=80",
+    tags: ["Lounge Experience", "Elite Pairing"]
   }
 ];
 
 export const INITIAL_EVENTS: Event[] = [
   {
     id: "e_1",
-    name: "Jazz & Shiraz Twilight Soirée",
-    description: "An evocative evening of world-class South African acoustic jazz and curated vertical tastings of Sandton's most celebrated vintage red shirazes under the city skyline.",
+    name: "Jazz & Shiraz Anniversary Soirée",
+    description: "An evocative candlelight evening of live premium acoustic jazz and curated vertical wine pairings under the stars. Perfect for romantic couples and date nights.",
     date: "2026-07-16",
     time: "19:00",
-    price: 750,
+    price: 350,
     image: "https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=1200&q=80",
-    venue: "Skyline Terrence & Lounge",
-    slotsLeft: 14,
+    venue: "Area 10 Rooftop Garden & Lounge",
+    slotsLeft: 12,
     status: "upcoming"
   },
   {
     id: "e_2",
-    name: "Chef's Vault: Wagyu & Whiskey Masterclass",
-    description: "A secure, closed-door 7-course culinary sensory voyage hosted in person by Max and our Executive Chef. Painstaking pairings with extreme single-malt Scottish and Cape whiskies.",
+    name: "Milestone Birthday Celebration Lounge",
+    description: "Spacious group-dining layouts and candle-lit layouts hosted by Max & Sherry. Special private group bookings accommodating birthdays, corporate networking, and assemblies of 4+ guests.",
     date: "2026-07-28",
-    time: "18:30",
-    price: 1950,
-    image: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=1200&q=80",
-    venue: "The Private Sommelier Vault",
+    time: "18:00",
+    price: 500,
+    image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1200&q=80",
+    venue: "The Sommelier lounge corner",
     slotsLeft: 0,
     status: "soldout"
   },
   {
     id: "e_3",
-    name: "High Fashion Champagne & Caviar Brunch",
-    description: "A vibrant synthesis of high runway couture showcasing prominent local designers, paired with flowing glasses of Grand Brut French Champagne, oysters, and premium caviar canapés.",
+    name: "Bespoke Pre-Order Gourmet Launch",
+    description: "A pristine physical demonstration of our food pre-order capability. Customize your luxury meals beforehand and dine with absolute upscale culinary precision.",
     date: "2026-08-15",
-    time: "11:30",
-    price: 1200,
+    time: "12:00",
+    price: 420,
     image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80",
-    venue: "Main Grand Dining Room",
-    slotsLeft: 30,
+    venue: "Grand Culinary Theater Room",
+    slotsLeft: 18,
     status: "upcoming"
   }
 ];
@@ -163,27 +302,27 @@ export const INITIAL_EVENTS: Event[] = [
 export const INITIAL_TESTIMONIALS: Testimonial[] = [
   {
     id: "t_1",
-    name: "Mandla Dhlamini",
-    role: "Forbes Lifestyle Africa Contributor",
-    review: "An absolute masterclass of Jo'burg dining. The Tomahawk Steak is visually and gustatorially flawless. The hospitality is deeply elegant, and the proprietors truly treat you as royalty. Standard of excellence that has set a new regional benchmark.",
+    name: "Isaac M.",
+    role: "Premium Dining & Lifestyle Connoisseur",
+    review: "An absolute masterclass in fine dining hospitality! The Zinziri heritage quail was cooked to spectacular melt-in-mouth perfection, and pan-seared Chambo fillet proves they honor local heritage. The romantic date night setup in Area 10 is fully default-prestige.",
     rating: 5,
     date: "May 2026"
   },
   {
     id: "t_2",
-    name: "Sarah K.",
-    role: "International Luxury Traveler Columnist",
-    review: "The private terrace reminiscent of Dubai's elite rooftop lounges. Incredible acoustic treatment where you can enjoy deep private conversations while soaking in soft, hypnotic jazz. The smoked sherry cocktail is dramatic art.",
+    name: "Daphne K.",
+    role: "Diplomatic Affairs Coordinator",
+    review: "We reserved the Sommelier lounge room for an advance executive dinner. Their pre-order food service makes customized preparation flawless. We dined with total operational privacy and experienced premium hospitality.",
     rating: 5,
     date: "June 2026"
   },
   {
     id: "t_3",
-    name: "Tariq J.",
-    role: "Corporate Executive & Fine Connoisseur",
-    review: "We reserved their Private Sommelier Vault for high-level shareholder negotiation dinners. The environment commands extreme confidence and prestige, and the team accommodated our complex culinary demands without hesitation.",
+    name: "Limbani T.",
+    role: "Lilongwe Corporate Executive",
+    review: "The ideal environment in Malawi for business contract signings, birthdays, and elite group gatherings. Max and Sherry personally guarantee that relationships and milestones are recorded in beautiful style.",
     rating: 5,
-    date: "April 2026"
+    date: "June 2026"
   }
 ];
 
@@ -191,43 +330,43 @@ export const INITIAL_GALLERY: GalleryItem[] = [
   {
     id: "g_1",
     title: "The Main Dining Room",
-    description: "Warm golden lighting casting premium silhouettes against handcrafted velvet charcoal booths.",
+    description: "Warm glowing lights casting premium silhouettes over velvet dining setups in Area 10, Lilongwe.",
     url: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=800&q=80",
     category: "ambience"
   },
   {
     id: "g_2",
-    title: "Wagyu Perfection Toast",
-    description: "A premium grade beef caramelized perfectly, displaying the peak of culinary confidence.",
-    url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+    title: "Zinziri Quail Masterpiece",
+    description: "Traditional local bird slow-roasted in honey and indigenous mountain aromatics.",
+    url: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=800&q=80",
     category: "dishes"
   },
   {
     id: "g_3",
-    title: "Signature Smoked Whiskey Sherry",
-    description: "Mesmerizing hickory smoke cascading over hand-expressed citrus and crystal clear ice blocks.",
+    title: "The Smoked Sherry Reserve",
+    description: "Interactive hickory smoke expanding under a glass globe, featuring 24K gold leaves.",
     url: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80",
     category: "lounge"
   },
   {
     id: "g_4",
-    title: "Jazz Twilight Gathering",
-    description: "Live performances of acoustic perfection blending effortlessly with world-class guest conversations.",
+    title: "Romantic Dinner Serenade",
+    description: "Candle-lit couples' night and anniversary layouts with acoustic live guitars.",
     url: "https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=800&q=80",
     category: "events"
   },
   {
     id: "g_5",
-    title: "The VIP Skyline Cigar Bar",
-    description: "An exclusive warm open-air terrace where high-prestige guests dine and unwind under Johannesburg starlight.",
+    title: "Lounge Social Bar Scene",
+    description: "Premium list of international and local drinks presented in an upscale evening atmosphere.",
     url: "https://images.unsplash.com/photo-1485686531765-ba63b07845a7?auto=format&fit=crop&w=800&q=80",
     category: "ambience"
   },
   {
     id: "g_6",
-    title: "Hand-curated Oyster Mignonette",
-    description: "Perfect fresh oysters garnished with state-of-the-art culinary gels and gold-infused edible pearls.",
-    url: "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=800&q=80",
+    title: "Lake Chambo Delicacy",
+    description: "Crisp-skinned seared Chambo fish steak served with heritage relishes.",
+    url: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80",
     category: "dishes"
   }
 ];

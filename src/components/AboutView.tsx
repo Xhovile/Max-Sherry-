@@ -6,12 +6,12 @@ export default function AboutView() {
     {
       year: "2018",
       title: "The Genesis Concept",
-      description: "Cultural visionary Max and master gastronomer Sherry combine their expertise to construct a bespoke sanctuary in Rosebank, filling the vacuum for a true luxury cocktail lounge and premium restaurant theater."
+      description: "Cultural visionary Max and master gastronomer Sherry combine their expertise to construct a bespoke sanctuary in Area 10, Lilongwe, filling the vacuum for a true luxury cocktail lounge and premium restaurant theater."
     },
     {
       year: "2020",
       title: "The Organic Alliance",
-      description: "Pioneering exclusive, direct contracts with independent Karoo farm estates and premium seafood outposts, establishing a sustainable, farm-to-lounge culinary pipeline."
+      description: "Pioneering exclusive, direct contracts with independent Malawian farm estates and fresh Lake Malawi Chambo fisheries, establishing a sustainable, lake-to-lounge culinary pipeline."
     },
     {
       year: "2022",
@@ -63,7 +63,7 @@ export default function AboutView() {
           </h1>
           <div className="w-24 h-[1.5px] bg-[#D4AF37] mb-8" />
           <p className="font-sans text-sm md:text-lg text-[#B0B0B0] max-w-2xl mx-auto tracking-wide font-light leading-relaxed">
-            Johannesburg’s prominent luxury dining room and lounge was born out of a simple, revolutionary premise: that fine culinary craftsmanship should fuel real community celebration and prestigious human interaction.
+            Lilongwe’s prominent luxury dining room and lounge was born out of a simple, revolutionary premise: that fine culinary craftsmanship should fuel real community celebration and prestigious human interaction.
           </p>
         </section>
 
@@ -95,11 +95,11 @@ export default function AboutView() {
               We did not set out to launch 'another restaurant'. In a digital-first era where human conversation has been compressed into tiny interfaces, we realized that an elite, warm physical meeting room is the ultimate currency of culture.
             </p>
             <p className="text-xs md:text-sm text-[#B0B0B0] leading-relaxed font-light">
-              Sherry spearheaded the development of our kitchen’s culinary rules: zero compromise on farm freshness, extreme precision in dry-aging meats, and incorporating classic French recipes with vibrant South African spices. Max designed the somatic environment: low light, mahogany paneling, amber glows, and acoustic separation that permits soft, confidential deals over exquisite single malts.
+              Sherry spearheaded the development of our kitchen’s culinary rules: zero compromise on farm freshness, extreme precision in sourcing local birds and fish, and incorporating classic French recipes with vibrant local Malawian spices. Max designed the somatic environment: low light, mahogany paneling, amber glows, and acoustic separation that permits soft, confidential deals over exquisite single malts.
             </p>
             <div className="p-6 bg-[#242424]/40 border-l-2 border-[#D4AF37] rounded-r">
               <p className="text-xs text-[#F5F5F5] italic font-light">
-                “When you come through those double bronze doors in Rosebank, you are not merely stepping into a dining room. You are claiming your seat in a legacy of hospitality.”
+                “When you come through those double bronze doors in Area 10, you are not merely stepping into a dining room. You are claiming your seat in a legacy of hospitality.”
               </p>
               <span className="text-[10px] mt-2 block text-[#D4AF37] uppercase tracking-widest font-mono">&mdash; MAX & SHERRY, CHIEF PROPRIETORS</span>
             </div>

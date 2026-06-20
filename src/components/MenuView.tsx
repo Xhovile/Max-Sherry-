@@ -8,15 +8,15 @@ interface MenuViewProps {
 }
 
 export default function MenuView({ menuItems, setActiveTab }: MenuViewProps) {
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'breakfast' | 'lunch' | 'dinner' | 'drinks' | 'specials'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'starters' | 'mains' | 'desserts' | 'beverages' | 'specials'>('all');
   const [searchQuery, setSearchQuery] = useState("");
 
   const categories = [
     { id: 'all', label: 'All Curations' },
-    { id: 'breakfast', label: 'Breakfast' },
-    { id: 'lunch', label: 'Lunch' },
-    { id: 'dinner', label: 'Dinner' },
-    { id: 'drinks', label: 'Liquids & Cellar' },
+    { id: 'starters', label: 'Starters & Soups' },
+    { id: 'mains', label: 'Main Courses' },
+    { id: 'desserts', label: 'Dessert Room' },
+    { id: 'beverages', label: 'Liquids & Cellar' },
     { id: 'specials', label: 'Lounge Specials' }
   ];
 

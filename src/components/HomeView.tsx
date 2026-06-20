@@ -13,7 +13,7 @@ interface HomeViewProps {
 
 export default function HomeView({ homepage, menuItems, events, testimonials, setActiveTab }: HomeViewProps) {
   // Filter signature/best dishes for the home page showcase
-  const featuredDishes = menuItems.filter(item => item.isSignature || item.category === 'dinner').slice(0, 5);
+  const featuredDishes = menuItems.filter(item => item.isSignature || item.category === 'mains').slice(0, 5);
   const [activeDishIndex, setActiveDishIndex] = useState(0);
 
   const signatureExperiences = [

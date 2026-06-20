@@ -3,7 +3,7 @@ export interface MenuItem {
   name: string;
   description: string;
   price: number;
-  category: 'breakfast' | 'lunch' | 'dinner' | 'drinks' | 'specials';
+  category: 'starters' | 'mains' | 'desserts' | 'beverages' | 'specials';
   image: string;
   tags?: string[];
   isSignature?: boolean;

@@ -57,7 +57,7 @@ export default function AdminDashboard({
   const [menuName, setMenuName] = useState("");
   const [menuDesc, setMenuDesc] = useState("");
   const [menuPrice, setMenuPrice] = useState(250);
-  const [menuCat, setMenuCat] = useState<'breakfast' | 'lunch' | 'dinner' | 'drinks' | 'specials'>('dinner');
+  const [menuCat, setMenuCat] = useState<'starters' | 'mains' | 'desserts' | 'beverages' | 'specials'>('mains');
   const [menuImg, setMenuImg] = useState("");
   const [menuTags, setMenuTags] = useState("");
   const [menuSig, setMenuSig] = useState(false);
@@ -92,7 +92,7 @@ export default function AdminDashboard({
     setMenuName("");
     setMenuDesc("");
     setMenuPrice(250);
-    setMenuCat('dinner');
+    setMenuCat('mains');
     setMenuImg("");
     setMenuTags("");
     setMenuSig(false);
@@ -489,10 +489,10 @@ export default function AdminDashboard({
                       onChange={(e) => setMenuCat(e.target.value as any)}
                       className="bg-[#1A1A1A] border border-[#242424] py-2.5 px-3 text-xs text-white rounded cursor-pointer"
                     >
-                      <option value="breakfast">Breakfast</option>
-                      <option value="lunch">Lunch</option>
-                      <option value="dinner">Dinner</option>
-                      <option value="drinks">Liquids & Cellar</option>
+                      <option value="starters">Starters & Soups</option>
+                      <option value="mains">Main Courses</option>
+                      <option value="desserts">Dessert Room</option>
+                      <option value="beverages">Liquids & Cellar</option>
                       <option value="specials">Lounge Specials</option>
                     </select>
                   </div>
