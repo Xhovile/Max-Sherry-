@@ -299,7 +299,7 @@ export default function App() {
           className="hidden md:flex items-center gap-2 px-4 py-3 bg-emerald-600 hover:bg-emerald-500 hover:scale-103 font-semibold text-white rounded-full shadow-2xl transition-all duration-300 text-xs uppercase tracking-wider border border-emerald-500/30"
         >
           <MessageSquare className="w-4.5 h-4.5 shrink-0" />
-          <span>Lounge Concierge</span>
+          <span>Book Now</span>
         </a>
       </div>
 

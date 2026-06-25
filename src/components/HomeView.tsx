@@ -340,7 +340,7 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
                 }}
                 className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-[#242424]/40 p-8 md:p-12 border border-[#242424] rounded-sm items-center cursor-grab active:cursor-grabbing select-none"
               >
-                <div className="lg:col-span-5 relative aspect-square md:aspect-[4/3] lg:aspect-square bg-[#1A1A1A] overflow-hidden rounded">
+                <div className="lg:col-span-5 relative aspect-[16/10] bg-[#1A1A1A] overflow-hidden rounded">
                   <img 
                     src={featuredDishes[activeDishIndex].image} 
                     alt={featuredDishes[activeDishIndex].name}
