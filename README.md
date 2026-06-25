@@ -1,20 +1,43 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Max & Sherry
 
-# Run and deploy your AI Studio app
+A modern website for **Max & Sherry Dine & Lounge** built with **React**, **TypeScript**, and **Vite**.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/43ee1b63-08f9-4677-94e0-0ec5dd02f2fe
+- Home, About, Menu, Events, Gallery, Corporate, Reservation, and Admin views
+- Reservation flow with prefilled event support
+- Admin dashboard for content management
+- Responsive layout with smooth page transitions
+- WhatsApp booking link for quick customer contact
+
+## Tech Stack
+
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS
+- Motion
+- Lucide Icons
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
+```bash
+npm install
+npm run dev
+```
 
+## Build
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```bash
+npm run build
+```
+
+## Preview
+
+```bash
+npm run preview
+```
+
+## Deploy Note
+
+If you deploy on Render or another host, make sure the host is allowed in `vite.config.ts`.
