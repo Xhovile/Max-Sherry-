@@ -472,7 +472,7 @@ export default function AdminDashboard({
                   </div>
 
                   <div className="flex flex-col space-y-1.5">
-                    <label className="text-[9px] uppercase tracking-widest">Price (ZAR/R)</label>
+                    <label className="text-[9px] uppercase tracking-widest">Price (MWK)</label>
                     <input 
                       type="number" 
                       required
@@ -560,7 +560,7 @@ export default function AdminDashboard({
                   <tr>
                     <th className="p-4">Dish details</th>
                     <th className="p-4">Category</th>
-                    <th className="p-4 text-left">Price (ZAR/R)</th>
+                    <th className="p-4 text-left">Price (MWK)</th>
                     <th className="p-4">Tags</th>
                     <th className="p-4 text-center">Controls</th>
                   </tr>
@@ -581,7 +581,7 @@ export default function AdminDashboard({
                         </div>
                       </td>
                       <td className="p-4 uppercase text-[10px] tracking-widest">{item.category}</td>
-                      <td className="p-4 font-serif text-sm font-semibold text-[#D4AF37]">R {item.price}</td>
+                      <td className="p-4 font-serif text-sm font-semibold text-[#D4AF37]">MWK {Number(item.price).toLocaleString()}</td>
                       <td className="p-4">
                         <div className="flex flex-wrap gap-1">
                           {item.tags?.map((t, idx) => (
@@ -669,7 +669,7 @@ export default function AdminDashboard({
                   </div>
 
                   <div className="flex flex-col space-y-1.5">
-                    <label className="text-[9px] uppercase tracking-widest">Ticket Price (ZAR/R)</label>
+                    <label className="text-[9px] uppercase tracking-widest">Ticket Price (MWK)</label>
                     <input 
                       type="number" 
                       required
@@ -771,7 +771,7 @@ export default function AdminDashboard({
                         <p>{ev.date}</p>
                         <p className="text-[10px] text-neutral-500 mt-0.5">{ev.time}</p>
                       </td>
-                      <td className="p-4 font-serif text-sm font-semibold text-[#D4AF37]">R {ev.price}</td>
+                      <td className="p-4 font-serif text-sm font-semibold text-[#D4AF37]">MWK {Number(ev.price).toLocaleString()}</td>
                       <td className="p-4">
                         <span className={`px-2 py-1 rounded text-[8px] uppercase tracking-widest font-semibold ${
                           ev.status === 'upcoming' 

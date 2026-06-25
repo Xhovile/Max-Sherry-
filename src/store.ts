@@ -84,13 +84,67 @@ export function useMaxSherryStore() {
   useEffect(() => {
     try {
       const savedHomepage = localStorage.getItem("max_sherry_homepage");
-      if (savedHomepage) setHomepage(JSON.parse(savedHomepage));
+      if (savedHomepage) {
+        const parsed = JSON.parse(savedHomepage);
+        if (
+          !parsed.heroHeadline ||
+          parsed.heroHeadline.includes("An exquisite fusion") ||
+          parsed.heroHeadline.includes("Area 10") ||
+          parsed.heroHeadline.includes("Lilongwe")
+        ) {
+          setHomepage(INITIAL_HOMEPAGE);
+          localStorage.setItem("max_sherry_homepage", JSON.stringify(INITIAL_HOMEPAGE));
+        } else {
+          setHomepage(parsed);
+        }
+      }
 
       const savedMenu = localStorage.getItem("max_sherry_menu");
-      if (savedMenu) setMenuItems(JSON.parse(savedMenu));
+      if (savedMenu) {
+        try {
+          const parsedMenu = JSON.parse(savedMenu);
+          const needsPriceHeal = parsedMenu.some((item: any) => item.price < 1000);
+          if (needsPriceHeal) {
+            setMenuItems(INITIAL_MENU);
+            localStorage.setItem("max_sherry_menu", JSON.stringify(INITIAL_MENU));
+          } else {
+            let updated = false;
+            const healedMenu = parsedMenu.map((item: any) => {
+              if (item.id === "m_1" && item.image.includes("1547592165-e1d17fed6006")) {
+                updated = true;
+                return { ...item, image: "https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?auto=format&fit=crop&w=800&q=80" };
+              }
+              if (item.id === "m_4" && item.image.includes("1512621776951-a57141f2eefd")) {
+                updated = true;
+                return { ...item, image: "https://images.unsplash.com/photo-1551248429-40975aa4de74?auto=format&fit=crop&w=800&q=80" };
+              }
+              return item;
+            });
+            setMenuItems(healedMenu);
+            if (updated) {
+              localStorage.setItem("max_sherry_menu", JSON.stringify(healedMenu));
+            }
+          }
+        } catch (e) {
+          setMenuItems(INITIAL_MENU);
+        }
+      }
 
       const savedEvents = localStorage.getItem("max_sherry_events");
-      if (savedEvents) setEvents(JSON.parse(savedEvents));
+      if (savedEvents) {
+        try {
+          const parsedEvents = JSON.parse(savedEvents);
+          const needsPriceHeal = parsedEvents.some((ev: any) => ev.price < 1000);
+          if (needsPriceHeal) {
+            setEvents(INITIAL_EVENTS);
+            localStorage.setItem("max_sherry_events", JSON.stringify(INITIAL_EVENTS));
+          } else {
+            setEvents(parsedEvents);
+          }
+        } catch (e) {
+          setEvents(INITIAL_EVENTS);
+        }
+      }
 
       const savedReservations = localStorage.getItem("max_sherry_reservations");
       if (savedReservations) setReservations(JSON.parse(savedReservations));

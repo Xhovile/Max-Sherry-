@@ -96,7 +96,7 @@ export default function EventsView({ events, onBookEvent }: EventsViewProps) {
                       <MapPin className="w-4.5 h-4.5 text-[#D4AF37] shrink-0 mt-0.5" />
                       <div>
                         <span className="text-[#F5F5F5] uppercase tracking-widest text-[10px] font-semibold">{ev.venue}</span>
-                        <p className="text-[10px] text-[#B0B0B0] mt-0.5 font-light">Max & Sherry Dine & Lounge Estate, Area 10, Lilongwe</p>
+                        <p className="text-[10px] text-[#B0B0B0] mt-0.5 font-light">Max & Sherry Dine & Lounge Estate, New Naperi, Blantyre</p>
                       </div>
                     </div>
                   </div>
@@ -106,7 +106,7 @@ export default function EventsView({ events, onBookEvent }: EventsViewProps) {
                     <div>
                       <span className="text-[9px] text-[#B0B0B0] uppercase tracking-wider block font-mono">Admission Package</span>
                       <div className="flex items-baseline gap-1.5 mt-1">
-                        <span className="font-serif text-2xl text-[#D4AF37] font-semibold">R {ev.price}</span>
+                        <span className="font-serif text-2xl text-[#D4AF37] font-semibold">MWK {Number(ev.price).toLocaleString()}</span>
                         <span className="text-[10px] text-[#B0B0B0]">/ person</span>
                       </div>
                     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMaxSherryStore } from './store';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -14,14 +14,62 @@ import ReservationForm from './components/ReservationForm';
 import AdminDashboard from './components/AdminDashboard';
 
 import { motion, AnimatePresence } from 'motion/react';
-import { HelpCircle, Sparkles, MessageSquare } from 'lucide-react';
+import { HelpCircle, Sparkles, MessageSquare, ArrowUp } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('home');
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [prefilledEvent, setPrefilledEvent] = useState<string>("");
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
 
   const store = useMaxSherryStore();
+
+  // Synchronize browser history and phone physical back button with activeTab
+  useEffect(() => {
+    const validTabs = ['home', 'story', 'menu', 'events', 'gallery', 'corporate', 'reserve', 'admin'];
+    
+    // Read the initial tab from location hash
+    const initialHash = window.location.hash.replace('#', '');
+    const initialTab = validTabs.includes(initialHash) ? initialHash : 'home';
+    
+    setActiveTab(initialTab);
+    
+    // Set baseline state in history
+    window.history.replaceState({ tab: initialTab }, '', `#${initialTab}`);
+
+    const handlePopState = (event: PopStateEvent) => {
+      const poppedTab = event.state?.tab || window.location.hash.replace('#', '');
+      if (poppedTab && validTabs.includes(poppedTab)) {
+        setActiveTab(poppedTab);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  // Update history when activeTab changes programmatically
+  useEffect(() => {
+    if (activeTab && window.history.state?.tab !== activeTab) {
+      window.history.pushState({ tab: activeTab }, '', `#${activeTab}`);
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const handleBookEventRedirect = (eventName: string) => {
     setPrefilledEvent(eventName);
@@ -48,6 +96,7 @@ export default function App() {
             events={store.events}
             testimonials={store.testimonials}
             setActiveTab={handleNavWithPrefillClear}
+            onBookEvent={handleBookEventRedirect}
           />
         );
       case 'story':
@@ -57,6 +106,7 @@ export default function App() {
           <MenuView 
             menuItems={store.menuItems}
             setActiveTab={handleNavWithPrefillClear}
+            onBookEvent={handleBookEventRedirect}
           />
         );
       case 'events':
@@ -145,11 +195,23 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {/* Persistent Sticky Luxury Concierge/WhatsApp Floating Button */}
-      <div className="fixed bottom-6 right-6 z-40 hidden md:flex flex-col space-y-3 items-end">
+      {/* Persistent Sticky Luxury Concierge/WhatsApp & Floating Widgets */}
+      <div className="fixed bottom-6 right-6 z-45 flex flex-col space-y-3 items-end">
         
+        {/* Elegant Back to Top Button */}
+        {showBackToTop && (
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center justify-center p-3.5 bg-[#242424]/95 hover:bg-[#D4AF37] border border-[#D4AF37]/50 hover:border-transparent text-[#D4AF37] hover:text-[#1A1A1A] rounded-full shadow-2xl hover:scale-110 transition-all duration-300 group cursor-pointer"
+            title="Back to Top"
+            aria-label="Back to top"
+          >
+            <ArrowUp className="w-4.5 h-4.5 group-hover:-translate-y-0.5 transition-transform" />
+          </button>
+        )}
+
         {/* Helper quick tips for evaluating the app */}
-        <div className="bg-[#242424]/95 backdrop-blur border border-[#D4AF37]/35 p-3.5 rounded shadow-xl text-right max-w-xs transition-transform duration-300 transform translate-y-2 select-none group">
+        <div className="bg-[#242424]/95 backdrop-blur border border-[#D4AF37]/35 p-3.5 rounded shadow-xl text-right max-w-xs transition-transform duration-300 transform translate-y-2 select-none group hidden md:block">
           <div className="flex items-center justify-end gap-1.5 text-[#D4AF37] font-semibold text-[10px] uppercase tracking-wider mb-1">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Developer Review Help</span>
@@ -160,11 +222,11 @@ export default function App() {
         </div>
 
         <a 
-          href="https://wa.me/27825554321?text=Hello%20Max%20and%20Sherry%20team%2C%20I'd%20love%20to%20reserve%20a%20private%20booth%20at%20your%20lounge."
+          href="https://wa.me/265995700800?text=Hello%20Max%20and%20Sherry%20team%2C%20I'd%20love%20to%20reserve%20a%20private%20booth%20at%20your%20lounge."
           target="_blank"
           referrerPolicy="no-referrer"
           title="Direct Lounge Concierge WhatsApp"
-          className="flex items-center gap-2 px-4 py-3 bg-emerald-600 hover:bg-emerald-500 hover:scale-103 font-semibold text-white rounded-full shadow-2xl transition-all duration-300 text-xs uppercase tracking-wider border border-emerald-500/30"
+          className="hidden md:flex items-center gap-2 px-4 py-3 bg-emerald-600 hover:bg-emerald-500 hover:scale-103 font-semibold text-white rounded-full shadow-2xl transition-all duration-300 text-xs uppercase tracking-wider border border-emerald-500/30"
         >
           <MessageSquare className="w-4.5 h-4.5 shrink-0" />
           <span>Lounge Concierge</span>

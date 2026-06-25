@@ -19,6 +19,8 @@ export default function ReservationForm({ prefilledEvent = "", createReservation
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedVoucher, setSubmittedVoucher] = useState<Reservation | null>(null);
 
+  const isMonday = date ? new Date(date + 'T00:00:00').getDay() === 1 : false;
+
   // Auto-set prefilled requests
   useEffect(() => {
     if (prefilledEvent) {
@@ -29,8 +31,8 @@ export default function ReservationForm({ prefilledEvent = "", createReservation
   }, [prefilledEvent]);
 
   const timeSlots = [
-    "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", 
-    "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30"
+    "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", 
+    "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM", "08:00 PM", "08:30 PM"
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -144,7 +146,7 @@ export default function ReservationForm({ prefilledEvent = "", createReservation
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a 
-                href={`https://wa.me/27825554321?text=Hi%20Max%20%26%20Sherry%2C%20I've%20just%20submitted%20reservation%20ID%20MS-${submittedVoucher.id.split('_')[1]}%20for%20${submittedVoucher.name}.%20Please%20verify.`}
+                href={`https://wa.me/265995700800?text=Hi%20Max%20%26%20Sherry%2C%20I've%20just%20submitted%20reservation%20ID%20MS-${submittedVoucher.id.split('_')[1]}%20for%20${submittedVoucher.name}.%20Please%20verify.`}
                 target="_blank"
                 referrerPolicy="no-referrer"
                 className="w-full sm:w-auto px-6 py-3.5 bg-emerald-700 hover:bg-emerald-600 text-[#F5F5F5] text-[10px] uppercase tracking-widest font-semibold font-sans transition-all inline-flex items-center justify-center gap-2"
@@ -247,7 +249,7 @@ export default function ReservationForm({ prefilledEvent = "", createReservation
                     type="tel" 
                     id="guest-phone" 
                     required
-                    placeholder="e.g. +27 82 555 4321"
+                    placeholder="e.g. +265 995 70 08 00"
                     value={phone} 
                     onChange={(e) => setPhone(e.target.value)}
                     className="w-full bg-[#1A1A1A] border border-[#242424] text-xs py-3.5 pl-12 pr-4 text-[#F5F5F5] focus:outline-none focus:border-[#D4AF37] transition-all rounded tracking-wide"
@@ -272,6 +274,11 @@ export default function ReservationForm({ prefilledEvent = "", createReservation
                     className="w-full bg-[#1A1A1A] border border-[#242424] text-xs py-3.5 pl-12 pr-4 text-[#F5F5F5] focus:outline-none focus:border-[#D4AF37] transition-all rounded tracking-wide font-sans cursor-pointer"
                   />
                 </div>
+                {isMonday && (
+                  <span className="text-[10px] text-amber-500 font-light mt-1">
+                    ⚠️ Note: We are closed on Mondays. Booking is subject to special corporate buyout/approval.
+                  </span>
+                )}
               </div>
 
               {/* Time slice selections */}

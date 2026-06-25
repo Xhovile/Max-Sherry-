@@ -5,9 +5,10 @@ import { MenuItem } from '../types';
 interface MenuViewProps {
   menuItems: MenuItem[];
   setActiveTab: (tab: string) => void;
+  onBookEvent?: (name: string) => void;
 }
 
-export default function MenuView({ menuItems, setActiveTab }: MenuViewProps) {
+export default function MenuView({ menuItems, setActiveTab, onBookEvent }: MenuViewProps) {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'starters' | 'mains' | 'desserts' | 'beverages' | 'specials'>('all');
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -135,11 +136,11 @@ export default function MenuView({ menuItems, setActiveTab }: MenuViewProps) {
               <div className="p-8 pt-0 border-t border-[#242424]/40 mt-4 flex items-center justify-between">
                 <div>
                   <span className="text-[9px] text-[#B0B0B0] uppercase tracking-widest">Price</span>
-                  <div className="font-serif text-xl text-[#D4AF37] font-semibold mt-0.5">R {item.price}</div>
+                  <div className="font-serif text-xl text-[#D4AF37] font-semibold mt-0.5">MWK {Number(item.price).toLocaleString()}</div>
                 </div>
 
                 <button 
-                  onClick={() => setActiveTab('reserve')}
+                  onClick={() => onBookEvent ? onBookEvent(`Culinary Curation: ${item.name}`) : setActiveTab('reserve')}
                   className="bg-transparent hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#1A1A1A] border border-[#D4AF37] text-[10px] uppercase tracking-[0.2em] px-4.5 py-2.5 transition-all duration-300 font-semibold"
                 >
                   Book Session

@@ -9,9 +9,10 @@ interface HomeViewProps {
   events: Event[];
   testimonials: Testimonial[];
   setActiveTab: (tab: string) => void;
+  onBookEvent?: (name: string) => void;
 }
 
-export default function HomeView({ homepage, menuItems, events, testimonials, setActiveTab }: HomeViewProps) {
+export default function HomeView({ homepage, menuItems, events, testimonials, setActiveTab, onBookEvent }: HomeViewProps) {
   // Filter signature/best dishes for the home page showcase
   const featuredDishes = menuItems.filter(item => item.isSignature || item.category === 'mains').slice(0, 5);
   const [activeDishIndex, setActiveDishIndex] = useState(0);
@@ -49,7 +50,7 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
     <div id="home-view" className="w-full bg-[#1A1A1A]">
       
       {/* 1. CINEMATIC LANDING HERO SECTION */}
-      <section id="hero-section" className="relative w-full h-screen min-h-[650px] flex items-center justify-center overflow-hidden">
+      <section id="hero-section" className="relative w-full h-screen min-h-[650px] flex items-center justify-center overflow-hidden pt-24 md:pt-28 pb-12">
         {/* Parallax Background Dark Atmosphere */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 scale-105"
@@ -129,7 +130,7 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
         </div>
 
         {/* Bottom Scrolling Indicator Hint */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-40 animate-pulse">
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center opacity-40 animate-pulse">
           <span className="text-[9px] uppercase tracking-[0.4em] text-[#B0B0B0] mb-2 font-mono">SCROLL TO ASCEND</span>
           <div className="w-[1.5px] h-10 bg-[#D4AF37]/50" />
         </div>
@@ -329,7 +330,7 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
                     <div className="flex flex-col">
                       <span className="text-[10px] uppercase tracking-[0.25em] text-[#B0B0B0]">Executive Price</span>
                       <span className="font-serif text-2xl text-[#D4AF37] font-medium mt-1">
-                        R {featuredDishes[activeDishIndex].price}
+                        MWK {Number(featuredDishes[activeDishIndex].price).toLocaleString()}
                       </span>
                     </div>
 
@@ -341,7 +342,7 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
                         Full Menu
                       </button>
                       <button
-                        onClick={() => setActiveTab('reserve')}
+                        onClick={() => onBookEvent ? onBookEvent(`Featured Dish: ${featuredDishes[activeDishIndex].name}`) : setActiveTab('reserve')}
                         className="bg-[#D4AF37] hover:bg-[#F5F5F5] text-[#1A1A1A] text-xs uppercase tracking-[0.2em] px-6 py-3 transition-colors font-semibold"
                       >
                         Reserve Dish Session
@@ -391,7 +392,7 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
                   
                   {/* Event Ticket Price Label */}
                   <div className="absolute top-4 right-4 bg-[#1A1A1A]/95 text-[#D4AF37] font-serif font-semibold text-sm px-3.5 py-1.5 rounded-sm border border-[#D4AF37]/20">
-                    R {ev.price}
+                    MWK {Number(ev.price).toLocaleString()}
                   </div>
 
                   {/* Solout Overlay */}
@@ -423,7 +424,7 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
                     <span className="text-[9px] uppercase tracking-widest text-[#B0B0B0]">{ev.venue}</span>
                     <button
                       disabled={ev.status === 'soldout'}
-                      onClick={() => setActiveTab('reserve')}
+                      onClick={() => onBookEvent ? onBookEvent(ev.name) : setActiveTab('reserve')}
                       className={`text-xs uppercase tracking-[0.2em] font-semibold font-sans py-2 px-4 border ${
                         ev.status === 'soldout'
                           ? 'border-neutral-800 text-neutral-600 cursor-not-allowed'

@@ -168,7 +168,7 @@ export default function Navbar({ activeTab, setActiveTab, isAdmin, setIsAdmin }:
             </div>
 
             <div className="border-t border-[#242424] py-8 text-center text-[10px] uppercase tracking-[0.3em] text-[#B0B0B0]">
-              Max & Sherry • Lilongwe
+              Max & Sherry • Blantyre
             </div>
           </motion.div>
         )}
