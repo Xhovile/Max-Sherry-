@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useMaxSherryStore } from './store';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -23,6 +23,7 @@ export default function App() {
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
 
   const store = useMaxSherryStore();
+  const scrollPositions = useRef<Record<string, number>>({});
 
   // Synchronize browser history and phone physical back button with activeTab
   useEffect(() => {
@@ -64,12 +65,74 @@ export default function App() {
       } else {
         setShowBackToTop(false);
       }
+
+      // Continuously record current tab scroll position
+      if (activeTab) {
+        scrollPositions.current[activeTab] = window.scrollY;
+      }
     };
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [activeTab]);
+
+  // Restore scroll state when activeTab changes
+  useEffect(() => {
+    const savedPos = scrollPositions.current[activeTab] || 0;
+    
+    // Tiny delay to ensure React has fully rendered the tab view contents before adjusting window scroll
+    const timer = setTimeout(() => {
+      window.scrollTo({
+        top: savedPos,
+        behavior: 'auto'
+      });
+    }, 30);
+
+    return () => clearTimeout(timer);
+  }, [activeTab]);
+
+  // Preload and cache all images on app initialization to prevent reloading flicker on tab navigation
+  useEffect(() => {
+    const urlsToPreload = new Set<string>();
+
+    // 1. High-priority background images and hero banners
+    const staticImages = [
+      "https://images.unsplash.com/photo-1485686531765-ba63b07845a7?auto=format&fit=crop&w=1920&q=90", // Home Hero
+      "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=1200&q=80", // About image 1
+      "https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1200&q=80", // Events background
+      "https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+    ];
+    staticImages.forEach(url => urlsToPreload.add(url));
+
+    // 2. Menu Item images
+    if (store.menuItems) {
+      store.menuItems.forEach(item => {
+        if (item.image) urlsToPreload.add(item.image);
+      });
+    }
+
+    // 3. Events images
+    if (store.events) {
+      store.events.forEach(ev => {
+        if (ev.image) urlsToPreload.add(ev.image);
+      });
+    }
+
+    // 4. Gallery images
+    if (store.gallery) {
+      store.gallery.forEach(img => {
+        if (img.url) urlsToPreload.add(img.url);
+      });
+    }
+
+    // Asynchronously preload images into the browser cache
+    urlsToPreload.forEach(url => {
+      const img = new Image();
+      img.src = url;
+    });
+  }, [store.menuItems, store.events, store.gallery]);
 
   const handleBookEventRedirect = (eventName: string) => {
     setPrefilledEvent(eventName);
