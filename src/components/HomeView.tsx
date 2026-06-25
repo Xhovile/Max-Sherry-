@@ -267,7 +267,7 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
                       else if (exp.title.includes("Entertainment")) setActiveTab("events");
                       else setActiveTab("menu");
                     }}
-                    className="text-left text-[11px] uppercase tracking-[0.25em] text-[#D4AF37] group-hover:text-[#F5F5F5] transition-colors font-semibold"
+                    className="text-left text-sm uppercase tracking-[0.25em] text-[#D4AF37] group-hover:text-[#F5F5F5] transition-colors font-semibold"
                   >
                     Learn More &rarr;
                   </button>

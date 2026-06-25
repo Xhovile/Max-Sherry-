@@ -120,8 +120,8 @@ export default function Navbar({ activeTab, setActiveTab, isAdmin, setIsAdmin }:
               title="Admin Portal"
               className={`p-2.5 rounded-full transition-colors ${
                 isAdmin 
-                  ? 'bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40' 
-                  : 'bg-[#242424] text-[#B0B0B0] hover:text-[#D4AF37] border border-transparent'
+                  ? 'bg-[#3B1C6E] text-[#D4AF37] border border-[#D4AF37]' 
+                  : 'bg-[#3B1C6E] text-white hover:bg-[#4d268a] border border-transparent'
               }`}
             >
               <Shield className="w-4.5 h-4.5" />
@@ -130,7 +130,7 @@ export default function Navbar({ activeTab, setActiveTab, isAdmin, setIsAdmin }:
             <button
               id="nav-book-button"
               onClick={() => handleNavClick('reserve')}
-              className="bg-transparent text-xs hover:bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37] uppercase tracking-[0.2em] font-sans font-medium px-6 py-3 transition-all duration-300 pointer"
+              className="bg-transparent text-xs hover:bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37] uppercase tracking-[0.25em] font-sans font-medium px-6 py-3 transition-all duration-300 pointer"
             >
               Reserve Table
             </button>
@@ -145,8 +145,10 @@ export default function Navbar({ activeTab, setActiveTab, isAdmin, setIsAdmin }:
                 if (!isAdmin) setActiveTab('admin');
                 else setActiveTab('home');
               }}
-              className={`p-2 rounded-full transition-colors ${
-                isAdmin ? 'text-[#D4AF37]' : 'text-[#B0B0B0]'
+              className={`p-2.5 rounded-full transition-colors ${
+                isAdmin 
+                  ? 'bg-[#3B1C6E] text-[#D4AF37] border border-[#D4AF37]' 
+                  : 'bg-[#3B1C6E] text-white hover:bg-[#4d268a] border border-transparent'
               }`}
             >
               <Shield className="w-5 h-5" />
@@ -155,10 +157,10 @@ export default function Navbar({ activeTab, setActiveTab, isAdmin, setIsAdmin }:
             <button
               id="mobile-menu-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-3 text-[#F5F5F5] hover:text-[#D4AF37] transition-colors"
+              className="p-2.5 bg-[#3B1C6E] hover:bg-[#4d268a] text-[#F5F5F5] rounded-full transition-colors shadow-md"
               aria-label="Toggle Menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5.5 h-5.5" /> : <Menu className="w-5.5 h-5.5" />}
             </button>
           </div>
 

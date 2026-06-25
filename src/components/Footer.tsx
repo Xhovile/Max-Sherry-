@@ -104,7 +104,7 @@ export default function Footer({ setActiveTab }: FooterProps) {
             </li>
             <li className="flex items-center space-x-3">
               <Mail className="w-4.5 h-4.5 text-[#D4AF37]" />
-              <a href="mailto:prestige@maxsherry.co.mw" className="hover:text-[#F5F5F5] transition-colors">prestige@maxsherry.co.mw</a>
+              <a href="mailto:maxandsherrylounge@gmail.com" className="hover:text-[#F5F5F5] transition-colors">maxandsherrylounge@gmail.com</a>
             </li>
           </ul>
         </div>
