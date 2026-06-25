@@ -126,6 +126,10 @@ export function useMaxSherryStore() {
                 updated = true;
                 return { ...item, image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80" };
               }
+              if (item.id === "m_11" && !item.image.includes("ohmfunrgylieyhcwhu2j")) {
+                updated = true;
+                return { ...item, image: "https://res.cloudinary.com/db3xx6mn4/image/upload/v1782411640/KNQR/products/ohmfunrgylieyhcwhu2j.jpg" };
+              }
               return item;
             });
             setMenuItems(healedMenu);
@@ -158,7 +162,25 @@ export function useMaxSherryStore() {
       if (savedReservations) setReservations(JSON.parse(savedReservations));
 
       const savedGallery = localStorage.getItem("max_sherry_gallery");
-      if (savedGallery) setGallery(JSON.parse(savedGallery));
+      if (savedGallery) {
+        try {
+          const parsedGallery = JSON.parse(savedGallery);
+          let galleryUpdated = false;
+          const healedGallery = parsedGallery.map((item: any) => {
+            if (item.id === "g_2" && !item.url.includes("ohmfunrgylieyhcwhu2j")) {
+              galleryUpdated = true;
+              return { ...item, url: "https://res.cloudinary.com/db3xx6mn4/image/upload/v1782411640/KNQR/products/ohmfunrgylieyhcwhu2j.jpg" };
+            }
+            return item;
+          });
+          setGallery(healedGallery);
+          if (galleryUpdated) {
+            localStorage.setItem("max_sherry_gallery", JSON.stringify(healedGallery));
+          }
+        } catch (e) {
+          setGallery(INITIAL_GALLERY);
+        }
+      }
 
       const savedTestimonials = localStorage.getItem("max_sherry_testimonials");
       if (savedTestimonials) setTestimonials(JSON.parse(savedTestimonials));

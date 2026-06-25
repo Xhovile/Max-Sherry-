@@ -107,7 +107,7 @@ export const INITIAL_MENU: MenuItem[] = [
     description: "Tender local quail slow-roasted with wild Malawian forest spices and glazed with raw organic mountain honey, lemon, and wild herbs.",
     price: 36000,
     category: "starters",
-    image: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=800&q=80",
+    image: "https://res.cloudinary.com/db3xx6mn4/image/upload/v1782411640/KNQR/products/ohmfunrgylieyhcwhu2j.jpg",
     isSignature: true,
     tags: ["Max & Sherry Signature", "Malawian Quail"]
   },
@@ -338,7 +338,7 @@ export const INITIAL_GALLERY: GalleryItem[] = [
     id: "g_2",
     title: "Zinziri Quail Masterpiece",
     description: "Traditional local bird slow-roasted in honey and indigenous mountain aromatics.",
-    url: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=800&q=80",
+    url: "https://res.cloudinary.com/db3xx6mn4/image/upload/v1782411640/KNQR/products/ohmfunrgylieyhcwhu2j.jpg",
     category: "dishes"
   },
   {
