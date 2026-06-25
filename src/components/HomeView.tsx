@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, Calendar, Star, Utensils, Music, Wine, MessageSquare } from 'lucide-react';
 import { MenuItem, Event, Testimonial, HomepageContent } from '../types';
@@ -16,6 +16,52 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
   // Filter signature/best dishes for the home page showcase
   const featuredDishes = menuItems.filter(item => item.isSignature || item.category === 'mains').slice(0, 5);
   const [activeDishIndex, setActiveDishIndex] = useState(0);
+
+  const [eventTrackX, setEventTrackX] = useState(0);
+  const [activeEventDot, setActiveEventDot] = useState(0);
+
+  const getCardStep = () => {
+    if (typeof window === 'undefined') return 322;
+    if (window.innerWidth < 640) {
+      return 290 + 32;
+    } else if (window.innerWidth < 768) {
+      return 340 + 32;
+    } else {
+      return 380 + 32;
+    }
+  };
+
+  const handleEventsDragEnd = (event: any, info: any) => {
+    const step = getCardStep();
+    const numCards = Math.min(events.slice(0, 6).length, 6);
+    const maxIndex = Math.max(0, numCards - 1);
+
+    const targetX = eventTrackX + info.offset.x;
+    let nearestIndex = Math.round(-targetX / step);
+    nearestIndex = Math.min(Math.max(nearestIndex, 0), maxIndex);
+
+    const snappedX = -nearestIndex * step;
+    setEventTrackX(snappedX);
+    setActiveEventDot(nearestIndex);
+  };
+
+  const handleEventDotClick = (idx: number) => {
+    const step = getCardStep();
+    const targetX = -idx * step;
+    setEventTrackX(targetX);
+    setActiveEventDot(idx);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      const step = getCardStep();
+      setEventTrackX(-activeEventDot * step);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [activeEventDot]);
 
   const signatureExperiences = [
     {
@@ -109,9 +155,9 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
             <button
               id="hero-events-btn"
               onClick={() => setActiveTab('events')}
-              className="w-full sm:w-auto px-8 py-4 bg-transparent hover:bg-[#F5F5F5]/10 text-[#B0B0B0] hover:text-[#F5F5F5] text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300 flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-4 bg-transparent border border-[#D4AF37]/40 hover:border-[#D4AF37] hover:bg-[#F5F5F5]/5 text-[#B0B0B0] hover:text-[#F5F5F5] text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300 flex items-center justify-center gap-2"
             >
-              <Calendar className="w-4 h-4" /> Upcoming Events
+              <Calendar className="w-4 h-4 text-[#D4AF37]" /> Upcoming Events
             </button>
           </motion.div>
         </div>
@@ -243,7 +289,7 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
               Interactive Dish Showcase
             </h2>
             <p className="text-xs text-[#B0B0B0] mt-3 font-light leading-relaxed">
-              Savor curated signature selections engineered for absolute taste perfection. Tap navigation to swipe the catalog.
+              Savor curated signature selections engineered for absolute taste perfection. Drag/swipe the card horizontally or use the navigation buttons to browse.
             </p>
           </div>
 
@@ -280,13 +326,26 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -40 }}
                 transition={{ duration: 0.4 }}
-                className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-[#242424]/40 p-8 md:p-12 border border-[#242424] rounded-sm items-center"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.4}
+                onDragEnd={(e, info) => {
+                  const swipe = info.offset.x;
+                  const swipeThreshold = 50;
+                  if (swipe < -swipeThreshold) {
+                    handleNextDish();
+                  } else if (swipe > swipeThreshold) {
+                    handlePrevDish();
+                  }
+                }}
+                className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-[#242424]/40 p-8 md:p-12 border border-[#242424] rounded-sm items-center cursor-grab active:cursor-grabbing select-none"
               >
                 <div className="lg:col-span-5 relative aspect-square md:aspect-[4/3] lg:aspect-square bg-[#1A1A1A] overflow-hidden rounded">
                   <img 
                     src={featuredDishes[activeDishIndex].image} 
                     alt={featuredDishes[activeDishIndex].name}
-                    className="w-full h-full object-cover brightness-95"
+                    draggable="false"
+                    className="w-full h-full object-cover brightness-95 select-none"
                   />
                   <div className="absolute top-4 left-4 bg-[#D4AF37] text-[#1A1A1A] text-[9px] uppercase tracking-[0.25em] font-semibold px-3 py-1.5 rounded-sm">
                     Prestige Recommendation
@@ -339,6 +398,23 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
                 </div>
               </motion.div>
             </AnimatePresence>
+
+            {/* Dish Showcase Progress Dots */}
+            <div className="flex justify-center items-center space-x-2 mt-8">
+              {featuredDishes.map((_, idx) => (
+                <button
+                  key={idx}
+                  id={`dish-dot-${idx}`}
+                  onClick={() => setActiveDishIndex(idx)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                    activeDishIndex === idx 
+                      ? 'bg-[#D4AF37] w-8' 
+                      : 'bg-[#B0B0B0]/30 hover:bg-[#B0B0B0]/60'
+                  }`}
+                  aria-label={`Go to dish ${idx + 1}`}
+                />
+              ))}
+            </div>
           </div>
         )}
       </section>
@@ -354,6 +430,9 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
               <h2 className="font-serif text-4xl text-[#F5F5F5]">
                 Upcoming Social Events
               </h2>
+              <p className="text-xs text-[#B0B0B0] mt-2 font-light leading-relaxed">
+                Drag/swipe horizontally to browse our curated elite happenings.
+              </p>
             </div>
             <button
               onClick={() => setActiveTab('events')}
@@ -363,105 +442,116 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.slice(0, 3).map((ev) => (
-              <div 
-                key={ev.id}
-                id={`home-event-card-${ev.id}`}
-                className="bg-[#1A1A1A] border border-[#242424] hover:border-[#D4AF37]/20 rounded-sm overflow-hidden flex flex-col group transition-all duration-300"
-              >
-                <div className="relative aspect-[16/10] bg-[#242424] overflow-hidden">
-                  <img 
-                    src={ev.image} 
-                    alt={ev.name}
-                    className="w-full h-full object-cover grayscale brightness-90 group-hover:scale-105 group-hover:grayscale-0 transition-all duration-500"
-                  />
-                  
-                  {/* Event Ticket Price Label */}
-                  <div className="absolute top-4 right-4 bg-[#1A1A1A]/95 text-[#D4AF37] font-serif font-semibold text-sm px-3.5 py-1.5 rounded-sm border border-[#D4AF37]/20">
-                    MWK {Number(ev.price).toLocaleString()}
-                  </div>
-
-                  {/* Solout Overlay */}
-                  {ev.status === 'soldout' && (
-                    <div className="absolute inset-0 bg-black/75 flex items-center justify-center">
-                      <span className="border border-[#D4AF37] text-[#D4AF37] font-serif text-lg tracking-[0.2em] uppercase px-5 py-2">
-                        FULLY RESERVED
-                      </span>
+          <div 
+            className="overflow-hidden w-full cursor-grab active:cursor-grabbing select-none py-2"
+          >
+            <motion.div
+              drag="x"
+              dragConstraints={{ left: -((Math.min(events.slice(0, 6).length, 6) - 1) * getCardStep()), right: 0 }}
+              dragElastic={0.15}
+              dragMomentum={false}
+              animate={{ x: eventTrackX }}
+              onDragEnd={handleEventsDragEnd}
+              className="flex gap-8 w-max"
+            >
+              {events.slice(0, 6).map((ev) => (
+                <div 
+                  key={ev.id}
+                  id={`home-event-card-${ev.id}`}
+                  className="w-[290px] sm:w-[340px] md:w-[380px] bg-[#1A1A1A] border border-[#242424] hover:border-[#D4AF37]/20 rounded-sm overflow-hidden flex flex-col group transition-all duration-300 shrink-0 select-none"
+                >
+                  <div className="relative aspect-[16/10] bg-[#242424] overflow-hidden select-none">
+                    <img 
+                      src={ev.image} 
+                      alt={ev.name}
+                      draggable="false"
+                      className="w-full h-full object-cover grayscale brightness-90 group-hover:scale-105 group-hover:grayscale-0 transition-all duration-500 select-none"
+                    />
+                    
+                    {/* Event Ticket Price Label */}
+                    <div className="absolute top-4 right-4 bg-[#1A1A1A]/95 text-[#D4AF37] font-serif font-semibold text-sm px-3.5 py-1.5 rounded-sm border border-[#D4AF37]/20 select-none">
+                      MWK {Number(ev.price).toLocaleString()}
                     </div>
-                  )}
-                </div>
 
-                <div className="p-8 flex flex-col flex-grow space-y-4">
-                  <div className="text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] font-semibold flex items-center space-x-2">
-                    <span>{ev.date}</span>
-                    <span>&bull;</span>
-                    <span>{ev.time}</span>
+                    {/* Soldout Overlay */}
+                    {ev.status === 'soldout' && (
+                      <div className="absolute inset-0 bg-black/75 flex items-center justify-center select-none">
+                        <span className="border border-[#D4AF37] text-[#D4AF37] font-serif text-lg tracking-[0.2em] uppercase px-5 py-2">
+                          FULLY RESERVED
+                        </span>
+                      </div>
+                    )}
                   </div>
 
-                  <h3 className="font-serif text-xl text-[#F5F5F5] group-hover:text-[#D4AF37] transition-all">
-                    {ev.name}
-                  </h3>
+                  <div className="p-8 flex flex-col flex-grow space-y-4">
+                    <div className="text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] font-semibold flex items-center space-x-2 select-none">
+                      <span>{ev.date}</span>
+                      <span>&bull;</span>
+                      <span>{ev.time}</span>
+                    </div>
 
-                  <p className="text-xs text-[#B0B0B0] leading-relaxed font-light flex-grow">
-                    {ev.description.substring(0, 100)}...
-                  </p>
+                    <h3 className="font-serif text-xl text-[#F5F5F5] group-hover:text-[#D4AF37] transition-all">
+                      {ev.name}
+                    </h3>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-[#242424]">
-                    <span className="text-[9px] uppercase tracking-widest text-[#B0B0B0]">{ev.venue}</span>
-                    <button
-                      disabled={ev.status === 'soldout'}
-                      onClick={() => onBookEvent ? onBookEvent(ev.name) : setActiveTab('reserve')}
-                      className={`text-xs uppercase tracking-[0.2em] font-semibold font-sans py-2 px-4 border ${
-                        ev.status === 'soldout'
-                          ? 'border-neutral-800 text-neutral-600 cursor-not-allowed'
-                          : 'border-[#D4AF37] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#1A1A1A] transition-all'
-                      }`}
-                    >
-                      {ev.status === 'soldout' ? 'Closed' : 'Book Now'}
-                    </button>
+                    <p className="text-xs text-[#B0B0B0] leading-relaxed font-light flex-grow">
+                      {ev.description.substring(0, 100)}...
+                    </p>
+
+                    <div className="flex items-center justify-between pt-4 border-t border-[#242424]">
+                      <span className="text-[9px] uppercase tracking-widest text-[#B0B0B0]">{ev.venue}</span>
+                      <button
+                        disabled={ev.status === 'soldout'}
+                        onClick={() => onBookEvent ? onBookEvent(ev.name) : setActiveTab('reserve')}
+                        className={`text-xs uppercase tracking-[0.2em] font-semibold font-sans py-2 px-4 border ${
+                          ev.status === 'soldout'
+                            ? 'border-neutral-800 text-neutral-600 cursor-not-allowed'
+                            : 'border-[#D4AF37] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#1A1A1A] transition-all'
+                        }`}
+                      >
+                        {ev.status === 'soldout' ? 'Closed' : 'Book Now'}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Events Progress Dots */}
+          <div className="flex justify-center items-center space-x-2 mt-8">
+            {events.slice(0, 6).map((_, idx) => (
+              <button
+                key={idx}
+                id={`event-dot-${idx}`}
+                onClick={() => handleEventDotClick(idx)}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  activeEventDot === idx 
+                    ? 'bg-[#D4AF37] w-8' 
+                    : 'bg-[#B0B0B0]/30 hover:bg-[#B0B0B0]/60'
+                }`}
+                aria-label={`Go to event slide ${idx + 1}`}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* 6. TESTIMONIALS SECTION */}
-      <section id="testimonials" className="py-24 max-w-7xl mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-16 flex flex-col items-center">
-          <span className="text-xs uppercase tracking-[0.3em] text-[#D4AF37] font-semibold mb-3">
-            &bull; PRESERVING AUDIT TRUST &bull;
+      {/* 6. FOUNDER'S NOTE SECTION */}
+      <section id="founders-note" className="py-24 max-w-4xl mx-auto px-6 border-t border-[#D4AF37]/10">
+        <div className="bg-[#242424]/20 border border-[#242424] p-10 md:p-16 rounded-sm relative flex flex-col text-center items-center">
+          <span className="text-xs uppercase tracking-[0.3em] text-[#D4AF37] font-semibold mb-6">
+            &bull; FOUNDER'S COMMITMENT &bull;
           </span>
-          <h2 className="font-serif text-3xl md:text-4xl text-[#F5F5F5]">
-            Sovereign Reviews
-          </h2>
-        </div>
+          
+          <blockquote className="font-serif text-xl md:text-2xl leading-relaxed text-[#F5F5F5] italic font-light mb-8 max-w-2xl">
+            “The ideal environment in Malawi for business contract signings, birthdays, and elite group gatherings. Max and Sherry personally guarantee that relationships and milestones are recorded in beautiful style.”
+          </blockquote>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((test) => (
-            <div 
-              key={test.id} 
-              id={`testimonial-card-${test.id}`}
-              className="bg-[#242424]/30 border border-[#242424] p-8 rounded-sm relative flex flex-col"
-            >
-              <div className="flex items-center space-x-1.5 mb-6 text-[#D4AF37]">
-                {[...Array(test.rating)].map((_, idx) => (
-                  <Star key={idx} className="w-4 h-4 fill-current" />
-                ))}
-              </div>
-
-              <blockquote className="text-xs leading-relaxed text-[#B0B0B0] italic font-light mb-8 flex-grow">
-                “{test.review}”
-              </blockquote>
-
-              <div className="flex flex-col pt-4 border-t border-[#242424]">
-                <cite className="not-italic text-xs font-serif text-[#F5F5F5] font-semibold">{test.name}</cite>
-                <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] mt-1 font-sans ">{test.role}</span>
-              </div>
-            </div>
-          ))}
+          <div className="flex flex-col items-center pt-6 border-t border-[#D4AF37]/20 w-36">
+            <cite className="not-italic text-sm font-serif text-[#F5F5F5] font-semibold">Hope Mezuwa</cite>
+            <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] mt-1 font-sans">Blantyre, Malawi</span>
+          </div>
         </div>
       </section>
     </div>

@@ -106,7 +106,7 @@ export default function App() {
     // 1. High-priority background images and hero banners
     const staticImages = [
       "https://images.unsplash.com/photo-1485686531765-ba63b07845a7?auto=format&fit=crop&w=1920&q=90", // Home Hero
-      "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=1200&q=80", // About image 1
+      "https://res.cloudinary.com/db3xx6mn4/image/upload/v1782401629/KNQR/products/pdrple0ww0b28xviljd1.jpg", // About image 1
       "https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1200&q=80", // Events background
       "https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=600&q=80",
       "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",

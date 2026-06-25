@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, Mail, MapPin, Clock, MessageSquare, ArrowUp, Instagram, Facebook } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, MessageSquare, ArrowUp, Instagram, Facebook, MessageCircle } from 'lucide-react';
 
 interface FooterProps {
   setActiveTab: (tab: string) => void;
@@ -42,7 +42,8 @@ export default function Footer({ setActiveTab }: FooterProps) {
               href="https://instagram.com" 
               target="_blank" 
               referrerPolicy="no-referrer"
-              className="p-2.5 rounded-full bg-[#1A1A1A] hover:bg-[#D4AF37]/15 hover:text-[#D4AF37] border border-[#242424] transition-all duration-300"
+              className="p-2.5 rounded-full bg-[#1A1A1A] text-[#B0B0B0] border border-[#242424] transition-all duration-300 hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7] hover:text-white hover:border-transparent hover:scale-110 shadow-lg hover:shadow-pink-500/20"
+              title="Follow us on Instagram"
             >
               <Instagram className="w-4.5 h-4.5" />
             </a>
@@ -50,7 +51,8 @@ export default function Footer({ setActiveTab }: FooterProps) {
               href="https://facebook.com" 
               target="_blank" 
               referrerPolicy="no-referrer"
-              className="p-2.5 rounded-full bg-[#1A1A1A] hover:bg-[#D4AF37]/15 hover:text-[#D4AF37] border border-[#242424] transition-all duration-300"
+              className="p-2.5 rounded-full bg-[#1A1A1A] text-[#B0B0B0] border border-[#242424] transition-all duration-300 hover:bg-[#1877F2] hover:text-white hover:border-transparent hover:scale-110 shadow-lg hover:shadow-blue-500/20"
+              title="Connect on Facebook"
             >
               <Facebook className="w-4.5 h-4.5" />
             </a>
@@ -58,10 +60,10 @@ export default function Footer({ setActiveTab }: FooterProps) {
               href="https://wa.me/265995700800?text=Hello%20Max%20%26%20Sherry%2C%20I'd%20love%20to%20inquire%20about%20booking%20a%20private%20lounge%20event." 
               target="_blank" 
               referrerPolicy="no-referrer"
-              className="p-2.5 rounded-full bg-[#1A1A1A] hover:bg-emerald-500/10 hover:text-emerald-400 border border-[#242424] transition-all duration-300 flex items-center justify-center text-emerald-500"
+              className="p-2.5 rounded-full bg-[#1A1A1A] text-[#B0B0B0] border border-[#242424] transition-all duration-300 hover:bg-[#25D366] hover:text-white hover:border-transparent hover:scale-110 shadow-lg hover:shadow-emerald-500/20 flex items-center justify-center"
               title="Chat on WhatsApp"
             >
-              <MessageSquare className="w-4.5 h-4.5" />
+              <MessageCircle className="w-4.5 h-4.5" />
             </a>
           </div>
         </div>
