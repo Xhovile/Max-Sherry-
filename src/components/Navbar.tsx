@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X, Shield, Calendar, Award } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -15,7 +15,7 @@ export default function Navbar({ activeTab, setActiveTab, isAdmin, setIsAdmin }:
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'story', label: 'Our Story' },
-    { id: 'menu', label: 'Culinary Menu' },
+    { id: 'menu', label: 'View Menu' },
     { id: 'events', label: 'Experiences & Events' },
     { id: 'gallery', label: 'Visual Gallery' },
     { id: 'corporate', label: 'Private & Corporate' }
@@ -27,16 +27,29 @@ export default function Navbar({ activeTab, setActiveTab, isAdmin, setIsAdmin }:
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Lock background body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <>
       <header id="main-header" className="fixed top-0 left-0 w-full z-50 bg-[#1A1A1A]/85 backdrop-blur-md border-b border-[#D4AF37]/10 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
           
           {/* Brand Logo & Presentation */}
-          <button 
+          <motion.button 
             id="nav-logo" 
             onClick={() => handleNavClick('home')}
-            className="flex flex-col text-left group"
+            whileTap={{ scale: 0.95 }}
+            className="flex flex-col text-left group cursor-pointer focus:outline-none"
           >
             <span className="font-serif text-2xl tracking-[0.25em] text-[#F5F5F5] group-hover:text-[#D4AF37] transition-colors duration-300">
               MAX & SHERRY
@@ -44,30 +57,55 @@ export default function Navbar({ activeTab, setActiveTab, isAdmin, setIsAdmin }:
             <span className="font-sans text-[9px] uppercase tracking-[0.6em] text-[#D4AF37] mt-0.5">
               Dine & Lounge
             </span>
-          </button>
+          </motion.button>
 
           {/* Desktop Navigation Link Menu */}
           <nav id="desktop-nav" className="hidden lg:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                id={`nav-link-${item.id}`}
-                onClick={() => handleNavClick(item.id)}
-                className={`text-xs uppercase tracking-[0.2em] transition-colors duration-300 py-2 relative ${
-                  activeTab === item.id 
-                    ? 'text-[#D4AF37]' 
-                    : 'text-[#B0B0B0] hover:text-[#F5F5F5]'
-                }`}
-              >
-                {item.label}
-                {activeTab === item.id && (
-                  <motion.div 
-                    layoutId="navbar-underline" 
-                    className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#D4AF37]" 
-                  />
-                )}
-              </button>
-            ))}
+            {navItems.map((item) => {
+              const isViewMenuButton = item.id === 'menu';
+              if (isViewMenuButton) {
+                return (
+                  <button
+                    key={item.id}
+                    id={`nav-link-${item.id}`}
+                    onClick={() => handleNavClick(item.id)}
+                    className={`text-xs uppercase tracking-[0.2em] transition-all duration-300 py-2 relative font-semibold ${
+                      activeTab === 'menu'
+                        ? 'text-[#D4AF37]'
+                        : 'text-[#3B1C6E] hover:text-[#52299a]'
+                    }`}
+                  >
+                    {item.label}
+                    {activeTab === 'menu' && (
+                      <motion.div 
+                        layoutId="navbar-underline" 
+                        className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#D4AF37]" 
+                      />
+                    )}
+                  </button>
+                );
+              }
+              return (
+                <button
+                  key={item.id}
+                  id={`nav-link-${item.id}`}
+                  onClick={() => handleNavClick(item.id)}
+                  className={`text-xs uppercase tracking-[0.2em] transition-colors duration-300 py-2 relative ${
+                    activeTab === item.id 
+                      ? 'text-[#D4AF37]' 
+                      : 'text-[#B0B0B0] hover:text-[#F5F5F5]'
+                  }`}
+                >
+                  {item.label}
+                  {activeTab === item.id && (
+                    <motion.div 
+                      layoutId="navbar-underline" 
+                      className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#D4AF37]" 
+                    />
+                  )}
+                </button>
+              );
+            })}
           </nav>
 
           {/* Desktop CTA / Buttons */}
@@ -136,24 +174,42 @@ export default function Navbar({ activeTab, setActiveTab, isAdmin, setIsAdmin }:
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-[#1A1A1A] pt-28 px-8 flex flex-col justify-between"
+            className="fixed inset-0 z-40 bg-[#1A1A1A] pt-28 px-8 flex flex-col justify-between overflow-y-auto pb-8"
           >
             <div className="flex flex-col space-y-6 mt-8">
-              {navItems.map((item, index) => (
-                <motion.button
-                  key={item.id}
-                  id={`mobile-nav-link-${item.id}`}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`text-left font-serif text-2xl tracking-wider py-2 border-b border-[#242424] ${
-                    activeTab === item.id ? 'text-[#D4AF37]' : 'text-[#F5F5F5]'
-                  }`}
-                >
-                  {item.label}
-                </motion.button>
-              ))}
+              {navItems.map((item, index) => {
+                const isViewMenuButton = item.id === 'menu';
+                if (isViewMenuButton) {
+                  return (
+                    <motion.button
+                      key={item.id}
+                      id={`mobile-nav-link-${item.id}`}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      onClick={() => handleNavClick(item.id)}
+                      className="w-full text-left px-5 bg-[#3B1C6E] hover:bg-[#4d268a] text-white font-semibold text-sm uppercase tracking-[0.25em] py-4 block rounded-sm shadow-md transition-all duration-300 pointer"
+                    >
+                      {item.label}
+                    </motion.button>
+                  );
+                }
+                return (
+                  <motion.button
+                    key={item.id}
+                    id={`mobile-nav-link-${item.id}`}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    onClick={() => handleNavClick(item.id)}
+                    className={`text-left font-serif text-2xl tracking-wider py-2 border-b border-[#242424] ${
+                      activeTab === item.id ? 'text-[#D4AF37]' : 'text-[#F5F5F5]'
+                    }`}
+                  >
+                    {item.label}
+                  </motion.button>
+                );
+              })}
 
               <motion.button
                 id="mobile-reserve-button"

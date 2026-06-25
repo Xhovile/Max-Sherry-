@@ -53,7 +53,7 @@ export const INITIAL_MENU: MenuItem[] = [
     description: "Large hand-cut sweet onion hoops dipped in beer batter, cooked crisp, and served with a zesty garlic dip.",
     price: 12000,
     category: "starters",
-    image: "https://images.unsplash.com/photo-1639024471283-2bc7b3c6a267?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=800&q=80",
     tags: ["Crispy Side"]
   },
   {
@@ -71,7 +71,7 @@ export const INITIAL_MENU: MenuItem[] = [
     description: "Double panko-crumbed stretchy mozzarella batons fried golden brown, accompanied by spicy sweet plum plum dipping jam.",
     price: 18000,
     category: "starters",
-    image: "https://images.unsplash.com/photo-1531749668029-2db88e4b76ce?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80",
     tags: ["Cheesy", "Warm"]
   },
   {

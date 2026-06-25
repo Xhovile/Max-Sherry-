@@ -65,20 +65,7 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
         <div className="absolute inset-0 bg-radial-gradient from-transparent via-transparent to-[#1A1A1A]/80" />
 
         {/* Hero Interactive Typography & Actions */}
-        <div className="relative max-w-5xl mx-auto px-6 text-center z-10 flex flex-col items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="flex items-center space-x-3 mb-6"
-          >
-            <span className="w-10 h-[1.5px] bg-[#D4AF37]" />
-            <span className="font-sans text-xs uppercase tracking-[0.55em] text-[#D4AF37] font-semibold">
-              PRESTIGE LUXURY DINE & LOUNGE
-            </span>
-            <span className="w-10 h-[1.5px] bg-[#D4AF37]" />
-          </motion.div>
-
+        <div className="relative max-w-5xl mx-auto px-6 text-center z-10 flex flex-col items-center pt-16 md:pt-24">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -115,9 +102,9 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
             <button
               id="hero-menu-btn"
               onClick={() => setActiveTab('menu')}
-              className="w-full sm:w-auto px-8 py-4 bg-transparent hover:bg-[#D4AF37]/10 text-[#F5F5F5] hover:text-[#D4AF37] border border-[#F5F5F5]/30 hover:border-[#D4AF37] text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300 pointer"
+              className="w-full sm:w-auto px-8 py-4 bg-[#3B1C6E] hover:bg-[#4d268a] text-[#F5F5F5] border border-[#3B1C6E] text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300 pointer shadow-lg"
             >
-              Explore Menu
+              View Menu
             </button>
             <button
               id="hero-events-btn"

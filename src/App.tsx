@@ -92,6 +92,13 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [activeTab]);
 
+  // Instantly deselect admin (set isAdmin to false) if user navigates to any tab other than 'admin'
+  useEffect(() => {
+    if (activeTab !== 'admin' && isAdmin) {
+      setIsAdmin(false);
+    }
+  }, [activeTab, isAdmin]);
+
   // Preload and cache all images on app initialization to prevent reloading flicker on tab navigation
   useEffect(() => {
     const urlsToPreload = new Set<string>();

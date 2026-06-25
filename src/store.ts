@@ -118,6 +118,14 @@ export function useMaxSherryStore() {
                 updated = true;
                 return { ...item, image: "https://images.unsplash.com/photo-1551248429-40975aa4de74?auto=format&fit=crop&w=800&q=80" };
               }
+              if (item.id === "m_5" && item.image.includes("1639024471283")) {
+                updated = true;
+                return { ...item, image: "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=800&q=80" };
+              }
+              if (item.id === "m_7" && item.image.includes("1531749668029")) {
+                updated = true;
+                return { ...item, image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80" };
+              }
               return item;
             });
             setMenuItems(healedMenu);
