@@ -14,7 +14,13 @@ import ReservationForm from './components/ReservationForm';
 import AdminDashboard from './components/AdminDashboard';
 
 import { motion, AnimatePresence } from 'motion/react';
-import { HelpCircle, Sparkles, MessageSquare, ArrowUp } from 'lucide-react';
+import { HelpCircle, Sparkles, ArrowUp } from 'lucide-react';
+
+const WhatsAppIcon = ({ className = '' }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M19.05 4.95A10 10 0 0 0 3.98 17.48L3 21l3.6-.94A10 10 0 1 0 19.05 4.95Zm-6.99 14.6a8.3 8.3 0 0 1-4.23-1.16l-.3-.17-2.68.7.72-2.61-.2-.28a8.3 8.3 0 1 1 6.7 3.52Zm4.8-6.07c-.26-.13-1.54-.76-1.78-.84-.24-.09-.42-.13-.6.13-.18.26-.69.84-.85 1.02-.16.18-.31.2-.58.07-.26-.13-1.1-.4-2.1-1.29-.78-.7-1.31-1.56-1.47-1.83-.15-.26-.02-.4.11-.53.11-.11.26-.31.39-.46.13-.15.17-.26.26-.43.09-.18.04-.33-.02-.46-.07-.13-.6-1.45-.82-1.98-.21-.51-.42-.44-.6-.45-.15-.01-.33-.01-.5-.01-.18 0-.46.07-.7.33-.24.26-.93.91-.93 2.22 0 1.31.96 2.57 1.09 2.75.13.18 1.87 2.86 4.53 4.01.63.27 1.12.43 1.5.55.63.2 1.2.17 1.65.1.5-.07 1.54-.63 1.76-1.24.22-.62.22-1.15.15-1.24-.07-.09-.24-.15-.5-.28Z" />
+  </svg>
+);
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -298,7 +304,7 @@ export default function App() {
           title="Direct Lounge Concierge WhatsApp"
           className="hidden md:flex items-center gap-2 px-4 py-3 bg-emerald-600 hover:bg-emerald-500 hover:scale-103 font-semibold text-white rounded-full shadow-2xl transition-all duration-300 text-xs uppercase tracking-wider border border-emerald-500/30"
         >
-          <MessageSquare className="w-4.5 h-4.5 shrink-0" />
+          <WhatsAppIcon className="w-4.5 h-4.5 shrink-0" />
           <span>Book Now</span>
         </a>
       </div>
