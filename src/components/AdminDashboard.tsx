@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Plus, Edit2, Trash2, Check, X, ShieldAlert, Sparkles, 
   UtensilsCrossed, CalendarDays, BookOpen, Image as ImageIcon, 
   UserSquare2, LayoutTemplate, RotateCw, CheckCheck, RefreshCw 
 } from 'lucide-react';
 import { MenuItem, Event, Reservation, GalleryItem, Testimonial, CorporateInquiry, HomepageContent } from '../types';
+import ConfirmationDialog from './ConfirmationDialog';
 
 interface AdminDashboardProps {
   homepage: HomepageContent;
@@ -43,6 +44,9 @@ export default function AdminDashboard({
   
   const [activeAdminTab, setActiveAdminTab] = useState<'content' | 'menu' | 'events' | 'bookings' | 'gallery' | 'reviews'>('content');
 
+  // Homepage edit mode state
+  const [isEditingHome, setIsEditingHome] = useState(false);
+
   // Homepage content state
   const [homeHeroTitle, setHomeHeroTitle] = useState(homepage.heroTitle);
   const [homeHeroHeadline, setHomeHeroHeadline] = useState(homepage.heroHeadline);
@@ -50,6 +54,63 @@ export default function AdminDashboard({
   const [homeStory1, setHomeStory1] = useState(homepage.storyText1);
   const [homeStory2, setHomeStory2] = useState(homepage.storyText2);
   const [homeStoryImage, setHomeStoryImage] = useState(homepage.storyImage);
+
+  // Synchronize inputs when the homepage content prop changes
+  useEffect(() => {
+    setHomeHeroTitle(homepage.heroTitle);
+    setHomeHeroHeadline(homepage.heroHeadline);
+    setHomeStoryHeading(homepage.storyHeading);
+    setHomeStory1(homepage.storyText1);
+    setHomeStory2(homepage.storyText2);
+    setHomeStoryImage(homepage.storyImage);
+  }, [homepage]);
+
+  const cancelHomeEdit = () => {
+    setHomeHeroTitle(homepage.heroTitle);
+    setHomeHeroHeadline(homepage.heroHeadline);
+    setHomeStoryHeading(homepage.storyHeading);
+    setHomeStory1(homepage.storyText1);
+    setHomeStory2(homepage.storyText2);
+    setHomeStoryImage(homepage.storyImage);
+    setIsEditingHome(false);
+  };
+
+  // Confirmation Modal State
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    confirmText: string;
+    isDestructive: boolean;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    confirmText: "Confirm",
+    isDestructive: false,
+    onConfirm: () => {}
+  });
+
+  const triggerConfirm = (
+    title: string,
+    message: string,
+    onConfirm: () => void,
+    confirmText = "Delete",
+    isDestructive = true
+  ) => {
+    setConfirmState({
+      isOpen: true,
+      title,
+      message,
+      confirmText,
+      isDestructive,
+      onConfirm: () => {
+        onConfirm();
+        setConfirmState(prev => ({ ...prev, isOpen: false }));
+      }
+    });
+  };
 
   // MenuItem forms state
   const [showMenuForm, setShowMenuForm] = useState(false);
@@ -125,6 +186,7 @@ export default function AdminDashboard({
       storyImage: homeStoryImage
     });
     alert("Homepage content securely published.");
+    setIsEditingHome(false);
   };
 
   const handleMenuSubmit = (e: React.FormEvent) => {
@@ -284,13 +346,19 @@ export default function AdminDashboard({
             <button
               id="admin-factory-reset"
               onClick={() => {
-                if(confirm("Confirm database factory reset? This overrides all edits with premium sample content.")) {
-                  resetAll();
-                  alert("Presets restored.");
-                  window.location.reload();
-                }
+                triggerConfirm(
+                  "Factory Reset Database",
+                  "Are you sure you want to perform a factory reset? This will override all your custom items, reservations, and edits with the premium preset sample data.",
+                  () => {
+                    resetAll();
+                    alert("Presets restored.");
+                    window.location.reload();
+                  },
+                  "Reset Data",
+                  true
+                );
               }}
-              className="bg-transparent hover:bg-red-500/10 text-red-400 hover:text-red-300 border border-red-500/20 hover:border-red-500/40 text-[10px] uppercase tracking-widest font-semibold px-4.5 py-3 transition-all inline-flex items-center gap-1.5"
+              className="bg-transparent hover:bg-red-500/10 text-red-400 hover:text-red-300 border border-red-500/20 hover:border-red-500/40 text-[10px] uppercase tracking-widest font-semibold px-4.5 py-3 transition-all inline-flex items-center gap-1.5 cursor-pointer"
             >
               <RotateCw className="w-3.5 h-3.5" />
               Reset To Presets
@@ -366,16 +434,40 @@ export default function AdminDashboard({
         {/* -------------------- SUB TAB: HOMEPAGE CONTENT -------------------- */}
         {activeAdminTab === 'content' && (
           <form id="admin-homepage-form" onSubmit={handleHomeSubmit} className="bg-[#242424]/30 border border-[#242424] p-8 rounded-sm space-y-6">
-            <h3 className="font-serif text-xl text-[#F5F5F5] border-b border-[#242424] pb-4">Configure Core Brand Imagery</h3>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-[#242424] pb-4 gap-4">
+              <div>
+                <h3 className="font-serif text-xl text-[#F5F5F5]">Configure Core Brand Imagery</h3>
+                <p className="text-[10px] text-neutral-500 mt-0.5">Manage copy and headers displayed on the landing page</p>
+              </div>
+              {!isEditingHome ? (
+                <button
+                  type="button"
+                  onClick={() => setIsEditingHome(true)}
+                  className="bg-[#D4AF37] text-[#1A1A1A] px-4 py-2.5 text-xs uppercase tracking-widest font-bold inline-flex items-center gap-1.5 hover:bg-[#F5F5F5] transition-all cursor-pointer"
+                >
+                  <Edit2 className="w-3.5 h-3.5" /> Edit Homepage Content
+                </button>
+              ) : (
+                <div className="flex items-center space-x-2 bg-[#D4AF37]/10 px-3 py-1.5 rounded border border-[#D4AF37]/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+                  <span className="text-[9px] uppercase tracking-widest text-[#D4AF37] font-semibold">Editing Live Draft</span>
+                </div>
+              )}
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col space-y-2">
                 <label className="text-[10px] uppercase tracking-wider font-semibold">Hero Title Header</label>
                 <input 
                   type="text" 
+                  disabled={!isEditingHome}
                   value={homeHeroTitle} 
                   onChange={(e) => setHomeHeroTitle(e.target.value)}
-                  className="bg-[#1A1A1A] border border-[#242424] py-3 px-4 text-xs text-white rounded focus:border-[#D4AF37]"
+                  className={`bg-[#1A1A1A] border py-3 px-4 text-xs rounded transition-all ${
+                    !isEditingHome 
+                      ? 'border-transparent text-neutral-400 cursor-not-allowed select-none bg-[#1A1A1A]/50' 
+                      : 'border-[#242424] text-white focus:border-[#D4AF37]'
+                  }`}
                 />
               </div>
 
@@ -383,9 +475,14 @@ export default function AdminDashboard({
                 <label className="text-[10px] uppercase tracking-wider font-semibold">Our Story Title Header</label>
                 <input 
                   type="text" 
+                  disabled={!isEditingHome}
                   value={homeStoryHeading} 
                   onChange={(e) => setHomeStoryHeading(e.target.value)}
-                  className="bg-[#1A1A1A] border border-[#242424] py-3 px-4 text-xs text-white rounded focus:border-[#D4AF37]"
+                  className={`bg-[#1A1A1A] border py-3 px-4 text-xs rounded transition-all ${
+                    !isEditingHome 
+                      ? 'border-transparent text-neutral-400 cursor-not-allowed select-none bg-[#1A1A1A]/50' 
+                      : 'border-[#242424] text-white focus:border-[#D4AF37]'
+                  }`}
                 />
               </div>
 
@@ -393,9 +490,14 @@ export default function AdminDashboard({
                 <label className="text-[10px] uppercase tracking-wider font-semibold">Hero Secondary Headline</label>
                 <textarea 
                   rows={2}
+                  disabled={!isEditingHome}
                   value={homeHeroHeadline} 
                   onChange={(e) => setHomeHeroHeadline(e.target.value)}
-                  className="bg-[#1A1A1A] border border-[#242424] p-4 text-xs text-white rounded focus:border-[#D4AF37] font-sans"
+                  className={`bg-[#1A1A1A] border p-4 text-xs rounded font-sans transition-all ${
+                    !isEditingHome 
+                      ? 'border-transparent text-neutral-400 cursor-not-allowed select-none bg-[#1A1A1A]/50 resize-none' 
+                      : 'border-[#242424] text-white focus:border-[#D4AF37]'
+                  }`}
                 />
               </div>
 
@@ -403,9 +505,14 @@ export default function AdminDashboard({
                 <label className="text-[10px] uppercase tracking-wider font-semibold">Story Narrative (Paragraph 1)</label>
                 <textarea 
                   rows={3}
+                  disabled={!isEditingHome}
                   value={homeStory1} 
                   onChange={(e) => setHomeStory1(e.target.value)}
-                  className="bg-[#1A1A1A] border border-[#242424] p-4 text-xs text-white rounded focus:border-[#D4AF37] font-sans"
+                  className={`bg-[#1A1A1A] border p-4 text-xs rounded font-sans transition-all ${
+                    !isEditingHome 
+                      ? 'border-transparent text-neutral-400 cursor-not-allowed select-none bg-[#1A1A1A]/50 resize-none' 
+                      : 'border-[#242424] text-white focus:border-[#D4AF37]'
+                  }`}
                 />
               </div>
 
@@ -413,9 +520,14 @@ export default function AdminDashboard({
                 <label className="text-[10px] uppercase tracking-wider font-semibold">Story Narrative (Paragraph 2)</label>
                 <textarea 
                   rows={3}
+                  disabled={!isEditingHome}
                   value={homeStory2} 
                   onChange={(e) => setHomeStory2(e.target.value)}
-                  className="bg-[#1A1A1A] border border-[#242424] p-4 text-xs text-white rounded focus:border-[#D4AF37] font-sans"
+                  className={`bg-[#1A1A1A] border p-4 text-xs rounded font-sans transition-all ${
+                    !isEditingHome 
+                      ? 'border-transparent text-neutral-400 cursor-not-allowed select-none bg-[#1A1A1A]/50 resize-none' 
+                      : 'border-[#242424] text-white focus:border-[#D4AF37]'
+                  }`}
                 />
               </div>
 
@@ -423,20 +535,40 @@ export default function AdminDashboard({
                 <label className="text-[10px] uppercase tracking-wider font-semibold">Our Story Side Image URL</label>
                 <input 
                   type="text" 
+                  disabled={!isEditingHome}
                   value={homeStoryImage} 
                   onChange={(e) => setHomeStoryImage(e.target.value)}
-                  className="bg-[#1A1A1A] border border-[#242424] py-3 px-4 text-xs text-white rounded focus:border-[#D4AF37]"
+                  className={`bg-[#1A1A1A] border py-3 px-4 text-xs rounded transition-all ${
+                    !isEditingHome 
+                      ? 'border-transparent text-neutral-400 cursor-not-allowed select-none bg-[#1A1A1A]/50' 
+                      : 'border-[#242424] text-white focus:border-[#D4AF37]'
+                  }`}
                 />
               </div>
             </div>
 
-            <div className="pt-4">
-              <button 
-                type="submit" 
-                className="px-8 py-3.5 bg-[#D4AF37] hover:bg-[#F5F5F5] text-[#1A1A1A] font-bold text-xs uppercase tracking-widest pointer"
-              >
-                Publish Front Content changes
-              </button>
+            <div className="pt-4 flex items-center gap-3">
+              {isEditingHome ? (
+                <>
+                  <button 
+                    type="submit" 
+                    className="px-8 py-3.5 bg-[#D4AF37] hover:bg-[#F5F5F5] text-[#1A1A1A] font-bold text-xs uppercase tracking-widest cursor-pointer transition-colors"
+                  >
+                    Publish Front Content changes
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={cancelHomeEdit}
+                    className="px-6 py-3.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold text-xs uppercase tracking-widest cursor-pointer transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <p className="text-[10px] text-neutral-500 italic">
+                  * Homepage content is currently in read-only mode. Click the &quot;Edit Homepage Content&quot; button above to modify.
+                </p>
+              )}
             </div>
           </form>
         )}
@@ -607,8 +739,16 @@ export default function AdminDashboard({
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button 
-                            onClick={() => { if(confirm(`Confirm deletion of ${item.name}?`)) deleteMenuItem(item.id); }}
-                            className="p-1.5 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all"
+                            onClick={() => {
+                              triggerConfirm(
+                                "Delete Culinary Item",
+                                `Are you sure you want to permanently remove "${item.name}" from the kitchen catalog?`,
+                                () => deleteMenuItem(item.id),
+                                "Delete",
+                                true
+                              );
+                            }}
+                            className="p-1.5 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all cursor-pointer"
                             title="Delete Item"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -800,8 +940,16 @@ export default function AdminDashboard({
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button 
-                            onClick={() => { if(confirm(`Confirm deletion of ${ev.name}?`)) deleteEvent(ev.id); }}
-                            className="p-1.5 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all"
+                            onClick={() => {
+                              triggerConfirm(
+                                "Delete Social Event",
+                                `Are you sure you want to permanently delete the event "${ev.name}"? This action cannot be undone.`,
+                                () => deleteEvent(ev.id),
+                                "Delete",
+                                true
+                              );
+                            }}
+                            className="p-1.5 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all cursor-pointer"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -885,8 +1033,16 @@ export default function AdminDashboard({
                         </td>
                         <td className="p-4 text-center">
                           <button 
-                            onClick={() => { if(confirm("Permanently archive this reservation data?")) deleteReservation(res.id); }}
-                            className="p-1 text-red-400 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20 rounded"
+                            onClick={() => {
+                              triggerConfirm(
+                                "Archive Reservation",
+                                `Are you sure you want to permanently archive the reservation under the name "${res.name}"?`,
+                                () => deleteReservation(res.id),
+                                "Archive",
+                                true
+                              );
+                            }}
+                            className="p-1 text-red-400 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20 rounded cursor-pointer"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -955,8 +1111,16 @@ export default function AdminDashboard({
                         </td>
                         <td className="p-4 text-center">
                           <button 
-                            onClick={() => { if(confirm("Delete corporate inquiry brief?")) deleteInquiry(inq.id); }}
-                            className="p-1 text-red-500 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20 rounded"
+                            onClick={() => {
+                              triggerConfirm(
+                                "Delete Inquiry Brief",
+                                `Are you sure you want to permanently delete the inquiry brief from "${inq.companyName || inq.contactName}"?`,
+                                () => deleteInquiry(inq.id),
+                                "Delete",
+                                true
+                              );
+                            }}
+                            className="p-1 text-red-500 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20 rounded cursor-pointer"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -1059,8 +1223,16 @@ export default function AdminDashboard({
 
                     <button
                       type="button"
-                      onClick={() => { if(confirm(`Archive this imagery?`)) deleteGalleryItem(item.id); }}
-                      className="w-full py-2 bg-red-600 hover:bg-red-500 text-white text-[9px] uppercase font-bold tracking-widest rounded-sm transition-colors text-center inline-flex items-center justify-center gap-1"
+                      onClick={() => {
+                        triggerConfirm(
+                          "De-Authorize Gallery Asset",
+                          `Are you sure you want to permanently archive the visual asset titled "${item.title}"?`,
+                          () => deleteGalleryItem(item.id),
+                          "De-Authorize",
+                          true
+                        );
+                      }}
+                      className="w-full py-2 bg-red-600 hover:bg-red-500 text-white text-[9px] uppercase font-bold tracking-widest rounded-sm transition-colors text-center inline-flex items-center justify-center gap-1 cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" /> De-Authorize
                     </button>
@@ -1162,8 +1334,16 @@ export default function AdminDashboard({
                       </td>
                       <td className="p-4 text-center">
                         <button
-                          onClick={() => { if(confirm(`Delete response by ${test.name}?`)) deleteTestimonial(test.id); }}
-                          className="p-1.5 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all inline-block"
+                          onClick={() => {
+                            triggerConfirm(
+                              "Delete Client Review",
+                              `Are you sure you want to permanently remove the review posted by "${test.name}"?`,
+                              () => deleteTestimonial(test.id),
+                              "Delete",
+                              true
+                            );
+                          }}
+                          className="p-1.5 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all inline-block cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -1178,6 +1358,16 @@ export default function AdminDashboard({
         )}
 
       </div>
+
+      <ConfirmationDialog
+        isOpen={confirmState.isOpen}
+        title={confirmState.title}
+        message={confirmState.message}
+        confirmText={confirmState.confirmText}
+        isDestructive={confirmState.isDestructive}
+        onConfirm={confirmState.onConfirm}
+        onCancel={() => setConfirmState(prev => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 }
