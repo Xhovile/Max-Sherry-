@@ -57,7 +57,7 @@ export default function AdminDashboard({
   const [menuName, setMenuName] = useState("");
   const [menuDesc, setMenuDesc] = useState("");
   const [menuPrice, setMenuPrice] = useState(250);
-  const [menuCat, setMenuCat] = useState<'starters' | 'mains' | 'desserts' | 'beverages' | 'specials'>('mains');
+  const [menuCat, setMenuCat] = useState<'starters' | 'steaks_beef' | 'pork' | 'chicken' | 'pasta' | 'seafood' | 'lake_malawi' | 'vegetarian' | 'kids' | 'desserts' | 'beverages'>('steaks_beef');
   const [menuImg, setMenuImg] = useState("");
   const [menuTags, setMenuTags] = useState("");
   const [menuSig, setMenuSig] = useState(false);
@@ -489,11 +489,17 @@ export default function AdminDashboard({
                       onChange={(e) => setMenuCat(e.target.value as any)}
                       className="bg-[#1A1A1A] border border-[#242424] py-2.5 px-3 text-xs text-white rounded cursor-pointer"
                     >
-                      <option value="starters">Starters & Soups</option>
-                      <option value="mains">Main Courses</option>
-                      <option value="desserts">Dessert Room</option>
-                      <option value="beverages">Liquids & Cellar</option>
-                      <option value="specials">Lounge Specials</option>
+                      <option value="starters">Starters</option>
+                      <option value="steaks_beef">Steaks & Beef</option>
+                      <option value="pork">Pork</option>
+                      <option value="chicken">Chicken</option>
+                      <option value="pasta">Pasta</option>
+                      <option value="seafood">Seafood</option>
+                      <option value="lake_malawi">Lake Malawi Specialties</option>
+                      <option value="vegetarian">Vegetarian</option>
+                      <option value="kids">Kids' Menu</option>
+                      <option value="desserts">Dessert</option>
+                      <option value="beverages">Beverages</option>
                     </select>
                   </div>
 
@@ -581,7 +587,9 @@ export default function AdminDashboard({
                         </div>
                       </td>
                       <td className="p-4 uppercase text-[10px] tracking-widest">{item.category}</td>
-                      <td className="p-4 font-serif text-sm font-semibold text-[#D4AF37]">MWK {Number(item.price).toLocaleString()}</td>
+                      <td className="p-4 font-serif text-sm font-semibold text-[#D4AF37]">
+                        {item.isMarketPrice ? "Market Price" : `MWK ${Number(item.price).toLocaleString()}`}
+                      </td>
                       <td className="p-4">
                         <div className="flex flex-wrap gap-1">
                           {item.tags?.map((t, idx) => (

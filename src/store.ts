@@ -99,14 +99,14 @@ export function useMaxSherryStore() {
         }
       }
 
-      const savedMenu = localStorage.getItem("max_sherry_menu");
+      const savedMenu = localStorage.getItem("max_sherry_menu_v2");
       if (savedMenu) {
         try {
           const parsedMenu = JSON.parse(savedMenu);
-          const needsPriceHeal = parsedMenu.some((item: any) => item.price < 1000);
+          const needsPriceHeal = parsedMenu.some((item: any) => item.price < 1000 && !item.isMarketPrice);
           if (needsPriceHeal) {
             setMenuItems(INITIAL_MENU);
-            localStorage.setItem("max_sherry_menu", JSON.stringify(INITIAL_MENU));
+            localStorage.setItem("max_sherry_menu_v2", JSON.stringify(INITIAL_MENU));
           } else {
             let updated = false;
             const healedMenu = parsedMenu.map((item: any) => {
@@ -134,7 +134,7 @@ export function useMaxSherryStore() {
             });
             setMenuItems(healedMenu);
             if (updated) {
-              localStorage.setItem("max_sherry_menu", JSON.stringify(healedMenu));
+              localStorage.setItem("max_sherry_menu_v2", JSON.stringify(healedMenu));
             }
           }
         } catch (e) {
@@ -208,19 +208,19 @@ export function useMaxSherryStore() {
     const newItem: MenuItem = { ...item, id: `m_${Date.now()}` };
     const updated = [newItem, ...menuItems];
     setMenuItems(updated);
-    saveState("max_sherry_menu", updated);
+    saveState("max_sherry_menu_v2", updated);
   };
 
   const updateMenuItem = (updatedItem: MenuItem) => {
     const updated = menuItems.map(item => item.id === updatedItem.id ? updatedItem : item);
     setMenuItems(updated);
-    saveState("max_sherry_menu", updated);
+    saveState("max_sherry_menu_v2", updated);
   };
 
   const deleteMenuItem = (id: string) => {
     const updated = menuItems.filter(item => item.id !== id);
     setMenuItems(updated);
-    saveState("max_sherry_menu", updated);
+    saveState("max_sherry_menu_v2", updated);
   };
 
   // Events actions
@@ -338,7 +338,7 @@ export function useMaxSherryStore() {
     setInquiries(INITIAL_INQUIRIES);
 
     localStorage.removeItem("max_sherry_homepage");
-    localStorage.removeItem("max_sherry_menu");
+    localStorage.removeItem("max_sherry_menu_v2");
     localStorage.removeItem("max_sherry_events");
     localStorage.removeItem("max_sherry_reservations");
     localStorage.removeItem("max_sherry_gallery");

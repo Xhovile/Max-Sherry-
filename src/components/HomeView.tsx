@@ -14,7 +14,7 @@ interface HomeViewProps {
 
 export default function HomeView({ homepage, menuItems, events, testimonials, setActiveTab, onBookEvent }: HomeViewProps) {
   // Filter signature/best dishes for the home page showcase
-  const featuredDishes = menuItems.filter(item => item.isSignature || item.category === 'mains').slice(0, 5);
+  const featuredDishes = menuItems.filter(item => item.isSignature || ['steaks_beef', 'pork', 'chicken', 'pasta', 'seafood', 'lake_malawi'].includes(item.category)).slice(0, 5);
   const [activeDishIndex, setActiveDishIndex] = useState(0);
 
   const [eventTrackX, setEventTrackX] = useState(0);
@@ -360,7 +360,7 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
                       </span>
                     ))}
                     <span className="text-[10px] uppercase tracking-widest bg-[#D4AF37]/10 text-[#D4AF37] px-2.5 py-1 rounded-sm border border-transparent">
-                      {featuredDishes[activeDishIndex].category}
+                      {featuredDishes[activeDishIndex].category.replace('_', ' ')}
                     </span>
                   </div>
 
@@ -376,7 +376,7 @@ export default function HomeView({ homepage, menuItems, events, testimonials, se
                     <div className="flex flex-col">
                       <span className="text-[10px] uppercase tracking-[0.25em] text-[#B0B0B0]">Executive Price</span>
                       <span className="font-serif text-2xl text-[#D4AF37] font-medium mt-1">
-                        MWK {Number(featuredDishes[activeDishIndex].price).toLocaleString()}
+                        {featuredDishes[activeDishIndex].isMarketPrice ? "Market Price" : `MWK ${Number(featuredDishes[activeDishIndex].price).toLocaleString()}`}
                       </span>
                     </div>
 

@@ -52,8 +52,27 @@ const MenuSkeleton = () => (
   </div>
 );
 
+const getCategoryLabel = (cat: string) => {
+  const labels: Record<string, string> = {
+    starters: 'Starters',
+    steaks_beef: 'Steaks & Beef',
+    pork: 'Pork',
+    chicken: 'Chicken',
+    pasta: 'Pasta',
+    seafood: 'Seafood',
+    lake_malawi: 'Lake Malawi Specialties',
+    vegetarian: 'Vegetarian',
+    kids: "Kids' Menu",
+    desserts: 'Desserts',
+    beverages: 'Beverages'
+  };
+  return labels[cat] || cat;
+};
+
 export default function MenuView({ menuItems, setActiveTab, onBookEvent }: MenuViewProps) {
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'starters' | 'mains' | 'desserts' | 'beverages' | 'specials'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<
+    'all' | 'starters' | 'steaks_beef' | 'pork' | 'chicken' | 'pasta' | 'seafood' | 'lake_malawi' | 'vegetarian' | 'kids' | 'desserts' | 'beverages'
+  >('all');
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -67,11 +86,17 @@ export default function MenuView({ menuItems, setActiveTab, onBookEvent }: MenuV
 
   const categories = [
     { id: 'all', label: 'All Curations' },
-    { id: 'starters', label: 'Starters & Soups' },
-    { id: 'mains', label: 'Main Courses' },
-    { id: 'desserts', label: 'Dessert Room' },
-    { id: 'beverages', label: 'Liquids & Cellar' },
-    { id: 'specials', label: 'Lounge Specials' }
+    { id: 'starters', label: 'Starters' },
+    { id: 'steaks_beef', label: 'Steaks & Beef' },
+    { id: 'pork', label: 'Pork' },
+    { id: 'chicken', label: 'Chicken' },
+    { id: 'pasta', label: 'Pasta' },
+    { id: 'seafood', label: 'Seafood' },
+    { id: 'lake_malawi', label: 'Lake Malawi' },
+    { id: 'vegetarian', label: 'Vegetarian' },
+    { id: 'kids', label: "Kids' Menu" },
+    { id: 'desserts', label: 'Desserts' },
+    { id: 'beverages', label: 'Beverages' }
   ];
 
   const filteredItems = useMemo(() => {
@@ -159,7 +184,7 @@ export default function MenuView({ menuItems, setActiveTab, onBookEvent }: MenuV
                       
                       {/* Category Indicator Tag */}
                       <span className="absolute top-4 left-4 bg-[#1A1A1A]/95 text-xs text-[#B0B0B0] uppercase tracking-widest px-3 py-1.5 rounded-sm border border-neutral-700/50">
-                        {item.category}
+                        {getCategoryLabel(item.category)}
                       </span>
 
                       {/* Signature badge if marked */}
@@ -195,7 +220,9 @@ export default function MenuView({ menuItems, setActiveTab, onBookEvent }: MenuV
                   <div className="p-8 pt-0 border-t border-[#242424]/40 mt-4 flex items-center justify-between">
                     <div>
                       <span className="text-[9px] text-[#B0B0B0] uppercase tracking-widest">Price</span>
-                      <div className="font-serif text-xl text-[#D4AF37] font-semibold mt-0.5">MWK {Number(item.price).toLocaleString()}</div>
+                      <div className="font-serif text-xl text-[#D4AF37] font-semibold mt-0.5">
+                        {item.isMarketPrice ? "Market Price" : `MWK ${Number(item.price).toLocaleString()}`}
+                      </div>
                     </div>
 
                     <button 
@@ -244,6 +271,91 @@ export default function MenuView({ menuItems, setActiveTab, onBookEvent }: MenuV
             Inquire Wine Tasting
           </button>
         </section>
+
+        {/* Choose Your Starch & Premium Touches Section */}
+        <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Choose Your Starch Column */}
+          <div className="bg-[#242424]/30 border border-[#242424] p-8 md:p-10 rounded-sm flex flex-col justify-between">
+            <div>
+              <span className="text-[9px] uppercase tracking-[0.25em] text-[#D4AF37] font-mono">Culinary Accompaniments</span>
+              <h3 className="font-serif text-2xl text-[#F5F5F5] mt-2 mb-6">Choose Your Starch</h3>
+              <p className="text-xs text-[#B0B0B0] font-light mb-8 leading-relaxed">
+                Complement your selected mains, flame-grilled proteins, or pan-seared local catch with your choice of premium Malawian or continental starch side:
+              </p>
+              
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  "French Fries",
+                  "Potato Wedges",
+                  "Mashed Potato",
+                  "Steamed Rice",
+                  "Fried Rice",
+                  "White Nsima",
+                  "Millet Nsima",
+                  "Kondowole",
+                  "Mgaiwa",
+                  "Plantains"
+                ].map((starch) => (
+                  <div key={starch} className="flex items-center space-x-2.5 text-xs text-[#F5F5F5] font-light">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+                    <span>{starch}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="border-t border-[#242424] pt-6 mt-8">
+              <p className="text-[10px] text-[#B0B0B0] font-light italic">
+                * Starch accompaniment is included with all major steaks, ribs, and chicken curations unless specified.
+              </p>
+            </div>
+          </div>
+
+          {/* Premium Touches Column */}
+          <div className="bg-[#242424]/30 border border-[#242424] p-8 md:p-10 rounded-sm flex flex-col justify-between">
+            <div>
+              <span className="text-[9px] uppercase tracking-[0.25em] text-[#D4AF37] font-mono">Recommended Premium Touches</span>
+              <h3 className="font-serif text-2xl text-[#F5F5F5] mt-2 mb-6 font-medium">Polished Guest Policies</h3>
+              
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-[10px] uppercase tracking-widest text-[#D4AF37] mb-1.5 font-semibold">Advance-Order Policy</h4>
+                  <p className="text-xs text-[#B0B0B0] font-light leading-relaxed">
+                    To deliver maximum precision and curation, we kindly ask our distinguished guests to preorder meals and book space in advance of arrival.
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="text-[10px] uppercase tracking-widest text-[#D4AF37] mb-1.5 font-semibold">Group Booking Deposit</h4>
+                  <p className="text-xs text-[#B0B0B0] font-light leading-relaxed">
+                    Bookings of 4 or more individuals require an advance commitment payment of <span className="text-[#D4AF37] font-medium">MK25,000</span> (non-refundable after setup and ingredient prep expenditures).
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-[#242424]/80">
+                  <div>
+                    <h5 className="text-[9px] uppercase tracking-wider text-[#B0B0B0] mb-1 font-medium">Direct Hotline</h5>
+                    <p className="text-xs text-[#F5F5F5] font-mono">+265 995 700 800</p>
+                    <p className="text-xs text-[#F5F5F5] font-mono mt-0.5">+265 885 700 200</p>
+                  </div>
+                  <div>
+                    <h5 className="text-[9px] uppercase tracking-wider text-[#B0B0B0] mb-1 font-medium">Our Location</h5>
+                    <p className="text-xs text-[#F5F5F5] leading-snug font-light">
+                      New Naperi, along Mpheta Close Street, behind Business Centre Building
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setActiveTab('reserve')}
+              className="mt-8 w-full bg-[#D4AF37] hover:bg-[#F5F5F5] text-[#1A1A1A] text-xs uppercase tracking-[0.2em] font-bold py-4 transition-all"
+            >
+              Secure Reservation
+            </button>
+          </div>
+        </div>
 
       </div>
     </div>

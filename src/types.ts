@@ -3,10 +3,11 @@ export interface MenuItem {
   name: string;
   description: string;
   price: number;
-  category: 'starters' | 'mains' | 'desserts' | 'beverages' | 'specials';
+  category: 'starters' | 'steaks_beef' | 'pork' | 'chicken' | 'pasta' | 'seafood' | 'lake_malawi' | 'vegetarian' | 'kids' | 'desserts' | 'beverages';
   image: string;
   tags?: string[];
   isSignature?: boolean;
+  isMarketPrice?: boolean;
 }
 
 export interface Event {
