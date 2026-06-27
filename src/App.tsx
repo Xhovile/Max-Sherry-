@@ -226,6 +226,7 @@ export default function App() {
             updateEvent={store.updateEvent}
             deleteEvent={store.deleteEvent}
             updateReservationStatus={store.updateReservationStatus}
+            updateReservationReminderStatus={store.updateReservationReminderStatus}
             deleteReservation={store.deleteReservation}
             addGalleryItem={store.addGalleryItem}
             deleteGalleryItem={store.deleteGalleryItem}

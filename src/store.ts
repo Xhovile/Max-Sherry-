@@ -263,6 +263,12 @@ export function useMaxSherryStore() {
     saveState("max_sherry_reservations", updated);
   };
 
+  const updateReservationReminderStatus = (id: string, reminderStatus: 'none' | 'email_sent' | 'sms_sent' | 'both_sent') => {
+    const updated = reservations.map(res => res.id === id ? { ...res, reminderStatus } : res);
+    setReservations(updated);
+    saveState("max_sherry_reservations", updated);
+  };
+
   const deleteReservation = (id: string) => {
     const updated = reservations.filter(res => res.id !== id);
     setReservations(updated);
@@ -363,6 +369,7 @@ export function useMaxSherryStore() {
     deleteEvent,
     createReservation,
     updateReservationStatus,
+    updateReservationReminderStatus,
     deleteReservation,
     addGalleryItem,
     deleteGalleryItem,

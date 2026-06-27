@@ -33,6 +33,7 @@ export interface Reservation {
   guests: number;
   specialRequests?: string;
   status: 'pending' | 'confirmed' | 'cancelled';
+  reminderStatus?: 'none' | 'email_sent' | 'sms_sent' | 'both_sent';
   createdAt: string;
 }
 

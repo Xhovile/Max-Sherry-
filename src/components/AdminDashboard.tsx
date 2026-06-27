@@ -3,11 +3,13 @@ import {
   Plus, Edit2, Trash2, Check, X, ShieldAlert, Sparkles, 
   UtensilsCrossed, CalendarDays, BookOpen, Image as ImageIcon, 
   UserSquare2, LayoutTemplate, RotateCw, CheckCheck, RefreshCw,
-  QrCode
+  QrCode, Mail, Smartphone, MessageSquare, Send, Bell, Clock,
+  ChevronDown, ChevronUp
 } from 'lucide-react';
 import { MenuItem, Event, Reservation, GalleryItem, Testimonial, CorporateInquiry, HomepageContent } from '../types';
 import ConfirmationDialog from './ConfirmationDialog';
 import AdminQRCodeGenerator from './AdminQRCodeGenerator';
+import ExpanderText from './ExpanderText';
 
 interface AdminDashboardProps {
   homepage: HomepageContent;
@@ -26,6 +28,7 @@ interface AdminDashboardProps {
   updateEvent: (ev: Event) => void;
   deleteEvent: (id: string) => void;
   updateReservationStatus: (id: string, status: 'pending' | 'confirmed' | 'cancelled') => void;
+  updateReservationReminderStatus: (id: string, reminderStatus: 'none' | 'email_sent' | 'sms_sent' | 'both_sent') => void;
   deleteReservation: (id: string) => void;
   addGalleryItem: (item: Omit<GalleryItem, "id">) => void;
   deleteGalleryItem: (id: string) => void;
@@ -39,7 +42,7 @@ interface AdminDashboardProps {
 export default function AdminDashboard({
   homepage, menuItems, events, reservations, gallery, testimonials, inquiries,
   updateHomepage, addMenuItem, updateMenuItem, deleteMenuItem,
-  addEvent, updateEvent, deleteEvent, updateReservationStatus, deleteReservation,
+  addEvent, updateEvent, deleteEvent, updateReservationStatus, updateReservationReminderStatus, deleteReservation,
   addGalleryItem, deleteGalleryItem, addTestimonial, deleteTestimonial,
   updateInquiryStatus, deleteInquiry, resetAll
 }: AdminDashboardProps) {
@@ -149,6 +152,119 @@ export default function AdminDashboard({
   const [testRole, setTestRole] = useState("");
   const [testReview, setTestReview] = useState("");
   const [testRating, setTestRating] = useState(5);
+
+  // Mock notification system state
+  const [selectedResForReminder, setSelectedResForReminder] = useState<Reservation | null>(null);
+  const [customSmsText, setCustomSmsText] = useState("");
+  const [customEmailSubject, setCustomEmailSubject] = useState("");
+  const [customEmailBody, setCustomEmailBody] = useState("");
+  const [isSendingSms, setIsSendingSms] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [smsSentSuccess, setSmsSentSuccess] = useState(false);
+  const [emailSentSuccess, setEmailSentSuccess] = useState(false);
+
+  // Notification alert toast
+  const [notificationToast, setNotificationToast] = useState<{
+    show: boolean;
+    message: string;
+    type: 'success' | 'info' | 'sms' | 'email';
+  } | null>(null);
+
+  // Auto-dismiss toast
+  useEffect(() => {
+    if (notificationToast?.show) {
+      const timer = setTimeout(() => {
+        setNotificationToast(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [notificationToast]);
+
+  const openReminderHub = (res: Reservation) => {
+    setSelectedResForReminder(res);
+    setSmsSentSuccess(res.reminderStatus === 'sms_sent' || res.reminderStatus === 'both_sent');
+    setEmailSentSuccess(res.reminderStatus === 'email_sent' || res.reminderStatus === 'both_sent');
+    
+    // Set up default elegant message drafts
+    setCustomSmsText(`Hi ${res.name}, this is a reminder of your upcoming fine dining experience at The Culinary Manifesto on ${res.date} at ${res.time}. We look forward to hosting your party of ${res.guests}! Reply to cancel or modify.`);
+    
+    setCustomEmailSubject(`Reservation Reminder: The Culinary Manifesto - ${res.date}`);
+    setCustomEmailBody(`Dear ${res.name},
+
+This is an elegant reminder from the stewards at The Culinary Manifesto.
+Your curated table reservation is confirmed for ${res.date} at ${res.time} for ${res.guests} guests.
+
+Location: Max & Sherry Dine & Lounge Estate, New Naperi, Blantyre
+
+If you have any last-minute dietary requests or would like to preview today's catch, please access your online menu link at any time.
+
+We look forward to rendering pristine culinary craftsmanship for you.
+
+Warm regards,
+The Stewards of the Manifesto`);
+  };
+
+  const handleApproveAndPrompt = (res: Reservation) => {
+    updateReservationStatus(res.id, 'confirmed');
+    
+    // Show toast
+    setNotificationToast({
+      show: true,
+      message: `Table reservation for ${res.name} confirmed! Dispatch hub activated.`,
+      type: 'success'
+    });
+    
+    // Auto open the dispatch hub for reminders
+    openReminderHub({ ...res, status: 'confirmed' });
+  };
+
+  const triggerMockSmsSend = async () => {
+    if (!selectedResForReminder) return;
+    setIsSendingSms(true);
+    
+    // Simulate API network lag
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+    
+    // Calculate new reminderStatus
+    let nextStatus: 'none' | 'email_sent' | 'sms_sent' | 'both_sent' = 'sms_sent';
+    if (emailSentSuccess || selectedResForReminder.reminderStatus === 'email_sent' || selectedResForReminder.reminderStatus === 'both_sent') {
+      nextStatus = 'both_sent';
+    }
+    
+    updateReservationReminderStatus(selectedResForReminder.id, nextStatus);
+    setSmsSentSuccess(true);
+    setIsSendingSms(false);
+    
+    setNotificationToast({
+      show: true,
+      message: `Mock SMS Reminder successfully dispatched to ${selectedResForReminder.phone}!`,
+      type: 'sms'
+    });
+  };
+
+  const triggerMockEmailSend = async () => {
+    if (!selectedResForReminder) return;
+    setIsSendingEmail(true);
+    
+    // Simulate API network lag
+    await new Promise((resolve) => setTimeout(resolve, 1400));
+    
+    // Calculate new reminderStatus
+    let nextStatus: 'none' | 'email_sent' | 'sms_sent' | 'both_sent' = 'email_sent';
+    if (smsSentSuccess || selectedResForReminder.reminderStatus === 'sms_sent' || selectedResForReminder.reminderStatus === 'both_sent') {
+      nextStatus = 'both_sent';
+    }
+    
+    updateReservationReminderStatus(selectedResForReminder.id, nextStatus);
+    setEmailSentSuccess(true);
+    setIsSendingEmail(false);
+    
+    setNotificationToast({
+      show: true,
+      message: `Mock Email Reminder successfully dispatched to ${selectedResForReminder.email}!`,
+      type: 'email'
+    });
+  };
 
   const resetMenuForm = () => {
     setEditMenuItemId(null);
@@ -982,6 +1098,35 @@ export default function AdminDashboard({
             {/* Table Reservations Queue */}
             <div className="space-y-4">
               <h3 className="font-serif text-xl text-[#F5F5F5] border-b border-[#242424] pb-2">Active Table Reservations ({reservations.length} total)</h3>
+
+              {/* Statistics Strip */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                <div className="bg-[#1a1a1a]/80 border border-[#242424] p-4 rounded text-center">
+                  <div className="text-[9px] uppercase tracking-wider text-neutral-500 font-semibold mb-1">Pending Reservations</div>
+                  <div className="font-serif text-2xl font-bold text-amber-400">
+                    {reservations.filter(r => r.status === 'pending').length}
+                  </div>
+                </div>
+                <div className="bg-[#1a1a1a]/80 border border-[#242424] p-4 rounded text-center">
+                  <div className="text-[9px] uppercase tracking-wider text-neutral-500 font-semibold mb-1">Confirmed Tables</div>
+                  <div className="font-serif text-2xl font-bold text-emerald-400">
+                    {reservations.filter(r => r.status === 'confirmed').length}
+                  </div>
+                </div>
+                <div className="bg-[#1a1a1a]/80 border border-[#242424] p-4 rounded text-center">
+                  <div className="text-[9px] uppercase tracking-wider text-neutral-500 font-semibold mb-1">Email Reminders Sent</div>
+                  <div className="font-serif text-2xl font-bold text-[#D4AF37]">
+                    {reservations.filter(r => r.reminderStatus === 'email_sent' || r.reminderStatus === 'both_sent').length}
+                  </div>
+                </div>
+                <div className="bg-[#1a1a1a]/80 border border-[#242424] p-4 rounded text-center">
+                  <div className="text-[9px] uppercase tracking-wider text-neutral-500 font-semibold mb-1">SMS Reminders Sent</div>
+                  <div className="font-serif text-2xl font-bold text-[#D4AF37]">
+                    {reservations.filter(r => r.reminderStatus === 'sms_sent' || r.reminderStatus === 'both_sent').length}
+                  </div>
+                </div>
+              </div>
+
               <div className="bg-[#242424]/30 border border-[#242424] rounded overflow-x-auto">
                 <table className="w-full text-xs text-left">
                   <thead className="bg-[#242424] text-[9px] uppercase tracking-wider text-neutral-400 border-b border-[#242424]">
@@ -991,6 +1136,7 @@ export default function AdminDashboard({
                       <th className="p-4">Guests</th>
                       <th className="p-4">Unique Directives / Remarks</th>
                       <th className="p-4 text-center">Status Action</th>
+                      <th className="p-4 text-center">Reminders</th>
                       <th className="p-4 text-center">Delete</th>
                     </tr>
                   </thead>
@@ -999,7 +1145,7 @@ export default function AdminDashboard({
                       <tr key={res.id} className="hover:bg-[#242424]/10">
                         <td className="p-4">
                           <p className="font-semibold">{res.name}</p>
-                          <p className="text-[10px] text-neutral-500 text-neutral-400 mt-0.5">{res.phone} &bull; {res.email}</p>
+                          <p className="text-[10px] text-neutral-500 mt-0.5">{res.phone} &bull; {res.email}</p>
                         </td>
                         <td className="p-4">
                           <p className="font-medium">{res.date}</p>
@@ -1008,7 +1154,7 @@ export default function AdminDashboard({
                         <td className="p-4 text-center font-serif text-sm font-semibold text-[#D4AF37]">{res.guests}</td>
                         <td className="p-4 max-w-xs">
                           {res.specialRequests ? (
-                            <p className="text-[11px] text-neutral-400 italic">“{res.specialRequests}”</p>
+                            <ExpanderText text={res.specialRequests} limit={10} />
                           ) : (
                             <span className="text-[10px] text-neutral-600 italic">No instructions declared</span>
                           )}
@@ -1027,20 +1173,53 @@ export default function AdminDashboard({
                             
                             <div className="flex items-center space-x-1">
                               <button 
-                                onClick={() => updateReservationStatus(res.id, 'confirmed')}
-                                className="p-1 rounded bg-[#242424] hover:bg-emerald-500 hover:text-[#1A1A1A] border border-neutral-800 text-emerald-500 transition-all"
+                                onClick={() => handleApproveAndPrompt(res)}
+                                className="p-1 rounded bg-[#242424] hover:bg-emerald-500 hover:text-[#1A1A1A] border border-neutral-800 text-emerald-500 transition-all cursor-pointer"
                                 title="Approve Table"
                               >
                                 <CheckCheck className="w-3.5 h-3.5" />
                               </button>
                               <button 
                                 onClick={() => updateReservationStatus(res.id, 'cancelled')}
-                                className="p-1 rounded bg-[#242424] hover:bg-red-500 hover:text-[#1A1A1A] border border-neutral-800 text-red-500 transition-all"
+                                className="p-1 rounded bg-[#242424] hover:bg-red-500 hover:text-[#1A1A1A] border border-neutral-800 text-red-500 transition-all cursor-pointer"
                                 title="Decline Table"
                               >
                                 <X className="w-3.5 h-3.5" />
                               </button>
                             </div>
+                          </div>
+                        </td>
+                        <td className="p-4 text-center min-w-[170px]">
+                          <div className="flex flex-col items-center space-y-1.5">
+                            <div className="flex space-x-1 justify-center">
+                              {/* Email Indicator */}
+                              <span className={`px-1.5 py-0.5 text-[8px] uppercase tracking-wider font-semibold rounded flex items-center gap-1 ${
+                                (res.reminderStatus === 'email_sent' || res.reminderStatus === 'both_sent')
+                                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25'
+                                  : 'bg-[#242424] text-neutral-500 border border-neutral-800/40'
+                              }`}>
+                                <Mail className="w-2.5 h-2.5" />
+                                Email
+                              </span>
+                              
+                              {/* SMS Indicator */}
+                              <span className={`px-1.5 py-0.5 text-[8px] uppercase tracking-wider font-semibold rounded flex items-center gap-1 ${
+                                (res.reminderStatus === 'sms_sent' || res.reminderStatus === 'both_sent')
+                                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25'
+                                  : 'bg-[#242424] text-neutral-500 border border-neutral-800/40'
+                              }`}>
+                                <Smartphone className="w-2.5 h-2.5" />
+                                SMS
+                              </span>
+                            </div>
+                            
+                            <button
+                              onClick={() => openReminderHub(res)}
+                              className="px-2.5 py-1 bg-[#242424] border border-neutral-800 hover:border-[#D4AF37] text-[8.5px] uppercase tracking-widest text-[#D4AF37] font-bold rounded flex items-center gap-1 hover:bg-[#D4AF37] hover:text-[#1A1A1A] transition-all cursor-pointer"
+                              title="Dispatch Guest Reminders"
+                            >
+                              <Bell className="w-2.5 h-2.5 animate-pulse" /> Dispatch
+                            </button>
                           </div>
                         </td>
                         <td className="p-4 text-center">
@@ -1103,11 +1282,11 @@ export default function AdminDashboard({
                           <p className="text-[10px] text-neutral-500 mt-0.5">{inq.date}</p>
                         </td>
                         <td className="p-4 font-serif text-sm text-center font-semibold text-[#D4AF37]">{inq.guests}</td>
-                        <td className="p-4 max-w-xs text-[11px] text-neutral-400">
+                        <td className="p-4 max-w-xs">
                           {inq.message ? (
-                            <p className="italic font-light">“{inq.message}”</p>
+                            <ExpanderText text={inq.message} limit={10} />
                           ) : (
-                            <span className="text-neutral-600 italic">No message drafted</span>
+                            <span className="text-[10px] text-neutral-600 italic">No message drafted</span>
                           )}
                         </td>
                         <td className="p-4 text-center min-w-[130px]">
@@ -1341,8 +1520,8 @@ export default function AdminDashboard({
                       <td className="p-4 font-semibold text-neutral-400">{test.role}</td>
                       <td className="p-4 text-neutral-500">{test.date}</td>
                       <td className="p-4 font-mono text-[#D4AF37]">{test.rating} ★</td>
-                      <td className="p-4 max-w-xs text-[11px] text-neutral-400 font-light truncate">
-                        “{test.review}”
+                      <td className="p-4 max-w-xs">
+                        <ExpanderText text={test.review} limit={10} />
                       </td>
                       <td className="p-4 text-center">
                         <button
@@ -1375,6 +1554,251 @@ export default function AdminDashboard({
         )}
 
       </div>
+
+      {/* --- MOCK NOTIFICATION Toast alert --- */}
+      {notificationToast && (
+        <div className="fixed bottom-6 right-6 z-50 shadow-2xl rounded border border-[#D4AF37]/30 bg-[#1A1A1A] p-4 text-xs font-semibold text-white max-w-sm flex items-center gap-3">
+          <div className="p-2 rounded bg-[#D4AF37]/10 text-amber-400">
+            {notificationToast.type === 'sms' && <Smartphone className="w-5 h-5 text-[#D4AF37] animate-pulse" />}
+            {notificationToast.type === 'email' && <Mail className="w-5 h-5 text-[#D4AF37] animate-pulse" />}
+            {notificationToast.type === 'success' && <CheckCheck className="w-5 h-5 text-emerald-400" />}
+          </div>
+          <div className="flex-1">
+            <p className="text-[10px] uppercase tracking-wider text-neutral-400 font-bold">Notification Dispatcher</p>
+            <p className="mt-0.5 text-[#F5F5F5]">{notificationToast.message}</p>
+          </div>
+          <button 
+            onClick={() => setNotificationToast(null)} 
+            className="text-neutral-500 hover:text-white p-1"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* --- PRESTIGE DISPATCHER: CUSTOM GUEST REMINDERS MODAL --- */}
+      {selectedResForReminder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-[#1C1C1C] border border-neutral-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col font-sans">
+            
+            {/* Modal Header */}
+            <div className="p-5 border-b border-neutral-800 flex items-center justify-between bg-[#141414]">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/20">
+                  <Bell className="w-5 h-5 text-[#D4AF37] animate-pulse" />
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-[#D4AF37] font-bold">Stewards Control Hub</span>
+                  <h3 className="font-serif text-lg text-white font-semibold">Guest Notification & Reminders Dispatch</h3>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedResForReminder(null)}
+                className="text-neutral-500 hover:text-white p-2 hover:bg-neutral-800 rounded transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-6 flex-1">
+              {/* Guest Profile Summary Card */}
+              <div className="bg-[#242424]/40 border border-[#242424] p-4 rounded grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+                <div>
+                  <span className="text-neutral-500 block uppercase tracking-wider text-[8px] font-bold">Host Guest Name</span>
+                  <span className="font-serif font-semibold text-white text-sm block mt-1">{selectedResForReminder.name}</span>
+                </div>
+                <div>
+                  <span className="text-neutral-500 block uppercase tracking-wider text-[8px] font-bold">Curated Dining Slot</span>
+                  <span className="font-medium text-neutral-300 block mt-1 font-mono">{selectedResForReminder.date} @ {selectedResForReminder.time}</span>
+                </div>
+                <div>
+                  <span className="text-neutral-500 block uppercase tracking-wider text-[8px] font-bold">Party Density</span>
+                  <span className="font-medium text-[#D4AF37] block mt-1 font-serif text-sm">{selectedResForReminder.guests} Guests Confirmed</span>
+                </div>
+                <div>
+                  <span className="text-neutral-500 block uppercase tracking-wider text-[8px] font-bold">Interactive State</span>
+                  <span className={`px-2 py-0.5 inline-block text-[8px] uppercase tracking-wider font-extrabold rounded mt-1.5 ${
+                    selectedResForReminder.status === 'confirmed' 
+                      ? 'bg-emerald-500/15 text-emerald-400' 
+                      : 'bg-amber-500/15 text-amber-400 animate-pulse'
+                  }`}>
+                    Reservation {selectedResForReminder.status}
+                  </span>
+                </div>
+              </div>
+
+              {/* Simulation Hub Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                {/* 1. SMS Dispatch Engine & Smartphone Simulator */}
+                <div className="bg-[#141414] border border-neutral-800 rounded p-5 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between border-b border-neutral-800 pb-3 mb-4">
+                      <div className="flex items-center space-x-2">
+                        <Smartphone className="w-4 h-4 text-[#D4AF37]" />
+                        <h4 className="text-[10px] uppercase tracking-widest text-[#F5F5F5] font-bold">SMS Dispatch Terminal</h4>
+                      </div>
+                      <span className="text-[9px] text-neutral-500 font-mono">{selectedResForReminder.phone}</span>
+                    </div>
+
+                    {/* Smartphone Simulator Mockup */}
+                    <div className="border border-neutral-800/80 bg-black rounded-xl p-3 mx-auto max-w-[280px] my-3 shadow-inner">
+                      {/* Top status bar */}
+                      <div className="flex justify-between items-center text-[8px] text-neutral-500 font-mono px-2 mb-3">
+                        <span>Manifesto Link</span>
+                        <div className="flex space-x-1 items-center">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-ping"></span>
+                          <span>LTE</span>
+                        </div>
+                      </div>
+                      
+                      {/* Message Thread */}
+                      <div className="space-y-2 max-h-[140px] overflow-y-auto mb-2 text-[9px] px-1 font-sans">
+                        <p className="text-[8px] text-neutral-600 text-center uppercase tracking-widest my-1 font-mono">Today</p>
+                        
+                        <div className="bg-neutral-800 text-neutral-300 p-2.5 rounded-lg rounded-tl-none max-w-[90%] break-words">
+                          {customSmsText || "Draft SMS text..."}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SMS Message Customizer Textarea */}
+                    <div className="mt-4 flex flex-col space-y-1.5">
+                      <label className="text-[9px] uppercase tracking-wider text-neutral-500 font-bold">Compose SMS Dispatch Draft</label>
+                      <textarea
+                        rows={4}
+                        value={customSmsText}
+                        onChange={(e) => {
+                          setCustomSmsText(e.target.value);
+                          setSmsSentSuccess(false); // Reset success to let them re-save/re-send
+                        }}
+                        className="bg-[#1E1E1E] border border-neutral-800 focus:border-[#D4AF37] p-2.5 rounded text-xs text-white focus:outline-none resize-none font-sans"
+                        placeholder="Draft SMS message body here..."
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-5 pt-3 border-t border-neutral-800/60 flex items-center justify-between">
+                    <span className="text-[9px] text-neutral-500 font-mono">Status: {smsSentSuccess ? "Dispatched ✓" : "Pending Send"}</span>
+                    <button
+                      onClick={triggerMockSmsSend}
+                      disabled={isSendingSms}
+                      className={`px-4 py-2 rounded text-[10px] uppercase tracking-wider font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        smsSentSuccess
+                          ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
+                          : 'bg-[#D4AF37] text-[#1A1A1A] hover:bg-[#D4AF37]/80'
+                      }`}
+                    >
+                      {isSendingSms ? (
+                        <>
+                          <RotateCw className="w-3.5 h-3.5 animate-spin" />
+                          Sending...
+                        </>
+                      ) : smsSentSuccess ? (
+                        <>
+                          <Check className="w-3.5 h-3.5" />
+                          SMS Dispatched
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-3.5 h-3.5" />
+                          Send Mock SMS
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* 2. Email Dispatch Engine & Mail Client Simulator */}
+                <div className="bg-[#141414] border border-neutral-800 rounded p-5 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between border-b border-neutral-800 pb-3 mb-4">
+                      <div className="flex items-center space-x-2">
+                        <Mail className="w-4 h-4 text-[#D4AF37]" />
+                        <h4 className="text-[10px] uppercase tracking-widest text-[#F5F5F5] font-bold">Email Dispatch Terminal</h4>
+                      </div>
+                      <span className="text-[9px] text-neutral-500 font-mono">{selectedResForReminder.email}</span>
+                    </div>
+
+                    {/* Email Subject Field */}
+                    <div className="flex flex-col space-y-1 mb-3">
+                      <label className="text-[8px] uppercase tracking-wider text-neutral-500 font-bold">Subject Header</label>
+                      <input 
+                        type="text" 
+                        value={customEmailSubject}
+                        onChange={(e) => {
+                          setCustomEmailSubject(e.target.value);
+                          setEmailSentSuccess(false);
+                        }}
+                        className="bg-[#1E1E1E] border border-neutral-800 focus:border-[#D4AF37] px-3 py-2 rounded text-xs text-white focus:outline-none font-sans"
+                        placeholder="Subject..."
+                      />
+                    </div>
+
+                    {/* Email Message Body Textarea */}
+                    <div className="flex flex-col space-y-1.5">
+                      <label className="text-[8px] uppercase tracking-wider text-neutral-500 font-bold">Compose Email Dispatch Body</label>
+                      <textarea
+                        rows={8}
+                        value={customEmailBody}
+                        onChange={(e) => {
+                          setCustomEmailBody(e.target.value);
+                          setEmailSentSuccess(false);
+                        }}
+                        className="bg-[#1E1E1E] border border-neutral-800 focus:border-[#D4AF37] p-3 rounded text-xs text-white focus:outline-none font-mono text-[10px] leading-relaxed whitespace-pre-wrap resize-none"
+                        placeholder="Dear Guest..."
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-5 pt-3 border-t border-neutral-800/60 flex items-center justify-between">
+                    <span className="text-[9px] text-neutral-500 font-mono">Status: {emailSentSuccess ? "Dispatched ✓" : "Pending Send"}</span>
+                    <button
+                      onClick={triggerMockEmailSend}
+                      disabled={isSendingEmail}
+                      className={`px-4 py-2 rounded text-[10px] uppercase tracking-wider font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        emailSentSuccess
+                          ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
+                          : 'bg-[#D4AF37] text-[#1A1A1A] hover:bg-[#D4AF37]/80'
+                      }`}
+                    >
+                      {isSendingEmail ? (
+                        <>
+                          <RotateCw className="w-3.5 h-3.5 animate-spin" />
+                          Sending...
+                        </>
+                      ) : emailSentSuccess ? (
+                        <>
+                          <Check className="w-3.5 h-3.5" />
+                          Email Dispatched
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-3.5 h-3.5" />
+                          Send Mock Email
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-5 border-t border-neutral-800 bg-[#141414] flex justify-end">
+              <button
+                onClick={() => setSelectedResForReminder(null)}
+                className="px-5 py-2.5 bg-[#D4AF37] text-[#1A1A1A] text-xs font-bold uppercase tracking-widest rounded hover:bg-[#D4AF37]/90 transition-colors cursor-pointer"
+              >
+                Conclude Notifications
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       <ConfirmationDialog
         isOpen={confirmState.isOpen}
