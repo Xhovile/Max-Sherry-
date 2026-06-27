@@ -205,6 +205,7 @@ export default function App() {
           <ReservationForm 
             prefilledEvent={prefilledEvent}
             createReservation={store.createReservation}
+            existingReservations={store.reservations}
           />
         );
       case 'admin':

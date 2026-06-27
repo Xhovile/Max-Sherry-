@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Users, Clock, Mail, Phone, User, MessageCircle, ClipboardCheck, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Calendar, Users, Clock, Mail, Phone, User, MessageCircle, ClipboardCheck, ArrowRight, ShieldCheck, Armchair, Lock, Check, Info } from 'lucide-react';
 import { Reservation } from '../types';
 
 interface ReservationFormProps {
   prefilledEvent?: string;
   createReservation: (res: Omit<Reservation, "id" | "status" | "createdAt">) => Reservation;
+  existingReservations?: Reservation[];
 }
 
-export default function ReservationForm({ prefilledEvent = "", createReservation }: ReservationFormProps) {
+export const PREMIUM_TABLES = [
+  { id: 1, name: "Sommelier Vault I", capacity: "2-4 guests", tier: "Ultra-VIP" },
+  { id: 2, name: "Sommelier Vault II", capacity: "2-4 guests", tier: "Ultra-VIP" },
+  { id: 3, name: "Skyline Terrace Alcove A", capacity: "2 guests", tier: "Premium" },
+  { id: 4, name: "Skyline Terrace Alcove B", capacity: "2 guests", tier: "Premium" },
+  { id: 5, name: "The Mahogany Salon Center", capacity: "4-6 guests", tier: "Elite" },
+  { id: 6, name: "The Mahogany Salon Corner", capacity: "2-4 guests", tier: "Elite" },
+  { id: 7, name: "Vintage Reserve Booth", capacity: "4-6 guests", tier: "Royal" },
+  { id: 8, name: "Sherry Hearthside Sofa", capacity: "2-3 guests", tier: "Cozy" },
+  { id: 9, name: "The Grand Library Table", capacity: "8-12 guests", tier: "Ambassador" },
+  { id: 10, name: "Presidential Skyline Pavilion", capacity: "12-25 guests", tier: "Imperial" },
+];
+
+export default function ReservationForm({ prefilledEvent = "", createReservation, existingReservations = [] }: ReservationFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -35,6 +49,65 @@ export default function ReservationForm({ prefilledEvent = "", createReservation
     "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM", "08:00 PM", "08:30 PM"
   ];
 
+  const [selectedTableId, setSelectedTableId] = useState<number | null>(null);
+
+  function isSameTimeSlot(t1: string, t2: string): boolean {
+    if (!t1 || !t2) return false;
+    const normalize = (t: string) => {
+      t = t.trim().toLowerCase();
+      let hour = 0;
+      if (t.includes('pm') || t.includes('am')) {
+        const parts = t.replace(/(am|pm)/, '').trim().split(':');
+        hour = parseInt(parts[0], 10);
+        if (t.includes('pm') && hour < 12) hour += 12;
+        if (t.includes('am') && hour === 12) hour = 0;
+      } else {
+        const parts = t.split(':');
+        hour = parseInt(parts[0], 10);
+      }
+      return hour;
+    };
+    try {
+      return normalize(t1) === normalize(t2);
+    } catch (e) {
+      return t1 === t2;
+    }
+  }
+
+  // Calculate occupied tables dynamically
+  const getOccupiedTableIds = (): Set<number> => {
+    const occupied = new Set<number>();
+    if (!date || !time) return occupied;
+
+    const matchingRes = existingReservations.filter(
+      res => res.date === date && res.status !== 'cancelled' && isSameTimeSlot(res.time, time)
+    );
+
+    matchingRes.forEach((res) => {
+      const tableId = (Math.abs(res.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 10) + 1;
+      let finalTableId = tableId;
+      for (let i = 0; i < 10; i++) {
+        const candidate = ((tableId - 1 + i) % 10) + 1;
+        if (!occupied.has(candidate)) {
+          finalTableId = candidate;
+          break;
+        }
+      }
+      occupied.add(finalTableId);
+    });
+
+    return occupied;
+  };
+
+  const occupiedTableIds = getOccupiedTableIds();
+
+  // Reset selected table if it gets booked or is invalid for the current slot
+  useEffect(() => {
+    if (selectedTableId && occupiedTableIds.has(selectedTableId)) {
+      setSelectedTableId(null);
+    }
+  }, [date, time, selectedTableId, occupiedTableIds]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !phone || !date || !time) {
@@ -46,6 +119,14 @@ export default function ReservationForm({ prefilledEvent = "", createReservation
 
     // Simulate luxury processing lag
     setTimeout(() => {
+      let finalRequests = specialRequests;
+      if (selectedTableId) {
+        const preferredTable = PREMIUM_TABLES.find(t => t.id === selectedTableId);
+        if (preferredTable) {
+          finalRequests = `[Seating Preference: ${preferredTable.name}] ${specialRequests}`.trim();
+        }
+      }
+
       const confirmedRes = createReservation({
         name,
         email,
@@ -53,7 +134,7 @@ export default function ReservationForm({ prefilledEvent = "", createReservation
         date,
         time,
         guests,
-        specialRequests
+        specialRequests: finalRequests
       });
 
       setSubmittedVoucher(confirmedRes);
@@ -67,6 +148,7 @@ export default function ReservationForm({ prefilledEvent = "", createReservation
       setTime("");
       setGuests(2);
       setSpecialRequests("");
+      setSelectedTableId(null);
     }, 1200);
   };
 
@@ -310,6 +392,109 @@ export default function ReservationForm({ prefilledEvent = "", createReservation
                 </div>
               </div>
 
+            </div>
+
+            {/* Interactive Premium Table Availability Map */}
+            <div className="bg-[#1C1C1C]/60 border border-[#242424] p-6 rounded-lg space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h4 className="font-serif text-lg text-[#F5F5F5] uppercase tracking-wider flex items-center gap-2">
+                    <Armchair className="w-5 h-5 text-[#D4AF37]" /> Living Salon & Spatial Allocation
+                  </h4>
+                  <p className="text-[10px] text-neutral-400 mt-0.5 font-light">
+                    Real-time boutique seating map for {date || "chosen date"} at {time || "chosen time"}
+                  </p>
+                </div>
+                
+                {date && time ? (
+                  <div className="flex items-center gap-4 text-xs">
+                    <span className="text-neutral-500 text-[10px] uppercase tracking-wider font-semibold">Status:</span>
+                    <span className="px-2.5 py-1 bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 rounded-full text-[10px] font-bold tracking-wider uppercase">
+                      {10 - occupiedTableIds.size} of 10 Tables Available
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 text-amber-500 text-[10px] uppercase tracking-wider font-semibold bg-amber-500/5 px-2.5 py-1.5 rounded border border-amber-500/10">
+                    <Info className="w-3.5 h-3.5 shrink-0" /> Pending Date & Time Input
+                  </div>
+                )}
+              </div>
+
+              {date && time ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                    {PREMIUM_TABLES.map((table) => {
+                      const isOccupied = occupiedTableIds.has(table.id);
+                      const isSelected = selectedTableId === table.id;
+                      
+                      return (
+                        <button
+                          key={table.id}
+                          type="button"
+                          disabled={isOccupied}
+                          onClick={() => setSelectedTableId(isSelected ? null : table.id)}
+                          className={`relative text-left p-3.5 rounded-lg border transition-all duration-300 flex flex-col justify-between h-28 cursor-pointer ${
+                            isOccupied
+                              ? 'bg-neutral-900/40 border-neutral-800/80 text-neutral-600 cursor-not-allowed select-none opacity-40'
+                              : isSelected
+                              ? 'bg-[#D4AF37]/10 border-[#D4AF37] text-[#F5F5F5] shadow-[0_0_15px_rgba(212,175,55,0.15)] ring-1 ring-[#D4AF37]'
+                              : 'bg-[#141414] border-neutral-800/80 text-neutral-300 hover:border-neutral-700/80 hover:bg-[#1A1A1A]'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between w-full">
+                            <span className="text-[10px] font-mono text-neutral-500 font-medium">#{table.id}</span>
+                            {isOccupied ? (
+                              <Lock className="w-3.5 h-3.5 text-neutral-600" />
+                            ) : isSelected ? (
+                              <Check className="w-3.5 h-3.5 text-[#D4AF37]" />
+                            ) : (
+                              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                            )}
+                          </div>
+
+                          <div className="mt-auto">
+                            <h5 className={`text-[11px] font-serif font-medium leading-tight ${isSelected ? 'text-[#D4AF37]' : 'text-neutral-200'}`}>
+                              {table.name}
+                            </h5>
+                            <div className="flex items-center gap-1.5 mt-1.5">
+                              <span className="text-[8px] uppercase tracking-wider text-neutral-500">{table.capacity}</span>
+                              <span className="text-[7px] px-1 py-0.2 bg-neutral-900 border border-neutral-800 rounded text-neutral-400 font-mono scale-90 origin-left">{table.tier}</span>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Dynamic Help Text & Selected Preference Highlight */}
+                  <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-3 border-t border-neutral-900">
+                    <div className="text-[10px] text-neutral-400 font-light max-w-lg leading-normal flex items-start gap-1.5">
+                      <span className="text-[#D4AF37] font-semibold mt-0.5">Note:</span>
+                      <span>
+                        Seating pre-selections are registered as requests on your voucher receipt and optimized by our Head Concierge. We prioritize specific room allocations wherever logistically possible.
+                      </span>
+                    </div>
+
+                    {selectedTableId && (
+                      <div className="bg-[#D4AF37]/5 border border-[#D4AF37]/20 px-3.5 py-2 rounded flex items-center gap-2 text-xs text-neutral-200 animate-fadeIn">
+                        <Check className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <div>
+                          <p className="text-[9px] uppercase tracking-wider text-neutral-500 leading-none">Requested Seating</p>
+                          <p className="font-serif text-[#D4AF37] font-semibold mt-0.5">{PREMIUM_TABLES.find(t => t.id === selectedTableId)?.name}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-8 text-center text-neutral-500 bg-[#141414]/40 border border-dashed border-neutral-800/80 rounded-lg">
+                  <Armchair className="w-8 h-8 text-neutral-600 mb-2 opacity-50" />
+                  <p className="text-xs font-serif italic text-neutral-400">Please provide a valid date and time slot above.</p>
+                  <p className="text-[10px] text-neutral-600 mt-1 max-w-xs leading-normal">
+                    The luxury table roster updates live to prevent spatial collisions and showcase table options.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Special Request Area */}

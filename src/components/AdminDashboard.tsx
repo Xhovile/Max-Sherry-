@@ -4,7 +4,7 @@ import {
   UtensilsCrossed, CalendarDays, BookOpen, Image as ImageIcon, 
   UserSquare2, LayoutTemplate, RotateCw, CheckCheck, RefreshCw,
   QrCode, Mail, Smartphone, MessageSquare, Send, Bell, Clock,
-  ChevronDown, ChevronUp
+  ChevronDown, ChevronUp, Search, Download, SlidersHorizontal
 } from 'lucide-react';
 import { MenuItem, Event, Reservation, GalleryItem, Testimonial, CorporateInquiry, HomepageContent } from '../types';
 import ConfirmationDialog from './ConfirmationDialog';
@@ -153,6 +153,12 @@ export default function AdminDashboard({
   const [testReview, setTestReview] = useState("");
   const [testRating, setTestRating] = useState(5);
 
+  // Search & Filter state for Bookings & Inquiries
+  const [resSearch, setResSearch] = useState("");
+  const [resFilter, setResFilter] = useState<'all' | 'pending' | 'confirmed' | 'cancelled'>('all');
+  const [inqSearch, setInqSearch] = useState("");
+  const [inqFilter, setInqFilter] = useState<'all' | 'pending' | 'reviewed' | 'completed'>('all');
+
   // Mock notification system state
   const [selectedResForReminder, setSelectedResForReminder] = useState<Reservation | null>(null);
   const [customSmsText, setCustomSmsText] = useState("");
@@ -290,6 +296,95 @@ The Stewards of the Manifesto`);
     setEvSlots(20);
     setEvStatus('upcoming');
     setShowEventForm(false);
+  };
+
+  // CSV Export utility
+  const exportToCSV = (data: any[], filename: string) => {
+    if (!data || !data.length) return;
+    const headers = Object.keys(data[0]);
+    const csvContent = [
+      headers.join(','), // headers
+      ...data.map(row => 
+        headers.map(fieldName => {
+          let val = row[fieldName];
+          if (typeof val === 'string') {
+            val = val.replace(/"/g, '""'); // escape double quotes
+            if (val.includes(',') || val.includes('\n') || val.includes('"')) {
+              val = `"${val}"`;
+            }
+          }
+          return val === undefined || val === null ? '' : val;
+        }).join(',')
+      )
+    ].join('\r\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Filter and search active table reservations
+  const filteredReservations = reservations.filter(res => {
+    const matchesSearch = 
+      res.name.toLowerCase().includes(resSearch.toLowerCase()) ||
+      res.email.toLowerCase().includes(resSearch.toLowerCase()) ||
+      res.phone.toLowerCase().includes(resSearch.toLowerCase()) ||
+      (res.specialRequests && res.specialRequests.toLowerCase().includes(resSearch.toLowerCase()));
+    
+    const matchesStatus = resFilter === 'all' ? true : res.status === resFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  // Filter and search corporate inquiries
+  const filteredInquiries = inquiries.filter(inq => {
+    const matchesSearch = 
+      inq.contactName.toLowerCase().includes(inqSearch.toLowerCase()) ||
+      (inq.companyName && inq.companyName.toLowerCase().includes(inqSearch.toLowerCase())) ||
+      inq.email.toLowerCase().includes(inqSearch.toLowerCase()) ||
+      inq.phone.toLowerCase().includes(inqSearch.toLowerCase()) ||
+      (inq.message && inq.message.toLowerCase().includes(inqSearch.toLowerCase())) ||
+      inq.eventType.toLowerCase().includes(inqSearch.toLowerCase());
+
+    const matchesStatus = inqFilter === 'all' ? true : inq.status === inqFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const exportReservationsToCSV = () => {
+    const dataToExport = filteredReservations.map(res => ({
+      'ID': `MS-${res.id.split('_')[1] || res.id}`,
+      'Guest Name': res.name,
+      'Email': res.email,
+      'Phone': res.phone,
+      'Date': res.date,
+      'Time': res.time,
+      'Guests': res.guests,
+      'Special Requests': res.specialRequests || 'None',
+      'Status': res.status.toUpperCase(),
+      'Reminder Status': res.reminderStatus || 'None'
+    }));
+    exportToCSV(dataToExport, `Max_Sherry_Reservations_${new Date().toISOString().slice(0,10)}.csv`);
+  };
+
+  const exportInquiriesToCSV = () => {
+    const dataToExport = filteredInquiries.map(inq => ({
+      'ID': `MS-INQ-${inq.id.split('_')[1] || inq.id}`,
+      'Contact Host': inq.contactName,
+      'Company Name': inq.companyName || 'Private House',
+      'Email': inq.email,
+      'Phone': inq.phone,
+      'Event Type': inq.eventType,
+      'Date': inq.date,
+      'Guests': inq.guests,
+      'Message Brief': inq.message || 'None',
+      'Status': inq.status.toUpperCase()
+    }));
+    exportToCSV(dataToExport, `Max_Sherry_Private_Hire_${new Date().toISOString().slice(0,10)}.csv`);
   };
 
   // Submit operations
@@ -449,18 +544,22 @@ The Stewards of the Manifesto`);
       <div className="max-w-7xl mx-auto px-6">
         
         {/* Core Administrative Header */}
-        <div className="bg-[#242424]/60 border border-[#D4AF37]/20 p-8 rounded flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
-          <div className="text-center md:text-left flex items-center space-x-4">
-            <div className="w-12 h-12 bg-[#D4AF37]/10 flex items-center justify-center rounded-full text-[#D4AF37] border border-[#D4AF37]/30">
-              <ShieldAlert className="w-6 h-6" />
+        <div className="bg-[#1C1C1C]/40 border border-neutral-800/80 p-8 md:p-12 rounded-lg flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+          <div className="text-center md:text-left space-y-4 max-w-2xl">
+            <div className="space-y-1">
+              <span className="text-[9px] uppercase tracking-[0.4em] text-[#D4AF37]/80 font-bold block">Max & Sherry Estate</span>
+              <h1 className="font-serif text-3xl md:text-5xl text-[#F5F5F5] font-light tracking-wider uppercase">
+                Admin Management Board
+              </h1>
             </div>
-            <div>
-              <span className="text-[9px] uppercase tracking-[0.25em] text-[#D4AF37] font-semibold">SECURED MANAGEMENT SHELL</span>
-              <h1 className="font-serif text-3xl text-[#F5F5F5] font-semibold mt-0.5">Admin Management Board</h1>
-            </div>
+            
+            <p className="text-[11px] md:text-xs text-amber-500/90 font-light max-w-xl leading-relaxed tracking-wide bg-amber-500/5 border border-amber-500/10 px-4 py-2.5 rounded inline-block">
+              ⚠️ This page will be protected so that only Max & Sherry Admins should have explicit control of everything ⚠️
+            </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col items-center md:items-end gap-3 shrink-0">
+            <span className="text-[8px] uppercase tracking-widest text-neutral-500 font-mono">System Recovery</span>
             <button
               id="admin-factory-reset"
               onClick={() => {
@@ -476,9 +575,9 @@ The Stewards of the Manifesto`);
                   true
                 );
               }}
-              className="bg-transparent hover:bg-red-500/10 text-red-400 hover:text-red-300 border border-red-500/20 hover:border-red-500/40 text-[10px] uppercase tracking-widest font-semibold px-4.5 py-3 transition-all inline-flex items-center gap-1.5 cursor-pointer"
+              className="bg-transparent hover:bg-red-500/10 text-red-400 hover:text-red-300 border border-red-500/10 hover:border-red-500/30 text-[9px] uppercase tracking-widest font-bold px-4 py-2.5 transition-all inline-flex items-center gap-1.5 cursor-pointer rounded"
             >
-              <RotateCw className="w-3.5 h-3.5" />
+              <RotateCw className="w-3 h-3" />
               Reset To Presets
             </button>
           </div>
@@ -1097,7 +1196,18 @@ The Stewards of the Manifesto`);
             
             {/* Table Reservations Queue */}
             <div className="space-y-4">
-              <h3 className="font-serif text-xl text-[#F5F5F5] border-b border-[#242424] pb-2">Active Table Reservations ({reservations.length} total)</h3>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#242424] pb-3">
+                <h3 className="font-serif text-xl text-[#F5F5F5]">Active Table Reservations ({reservations.length} total)</h3>
+                
+                {filteredReservations.length > 0 && (
+                  <button
+                    onClick={exportReservationsToCSV}
+                    className="self-start sm:self-auto px-3.5 py-1.5 bg-[#1F1F1F] border border-neutral-800 hover:border-[#D4AF37] text-[10px] uppercase tracking-widest text-[#D4AF37] hover:text-[#F5F5F5] font-bold rounded flex items-center gap-1.5 transition-all cursor-pointer hover:bg-neutral-900"
+                  >
+                    <Download className="w-3.5 h-3.5" /> Export Roster
+                  </button>
+                )}
+              </div>
 
               {/* Statistics Strip */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -1127,6 +1237,54 @@ The Stewards of the Manifesto`);
                 </div>
               </div>
 
+              {/* Luxury Filter Controls */}
+              <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-[#161616]/40 p-4 rounded-lg border border-neutral-900 mb-2">
+                {/* Status Pills */}
+                <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
+                  {(['all', 'pending', 'confirmed', 'cancelled'] as const).map((status) => {
+                    const count = status === 'all' 
+                      ? reservations.length 
+                      : reservations.filter(r => r.status === status).length;
+                    const isActive = resFilter === status;
+                    return (
+                      <button
+                        key={status}
+                        onClick={() => setResFilter(status)}
+                        className={`px-3 py-1.5 rounded text-[9px] uppercase tracking-wider font-bold transition-all whitespace-nowrap cursor-pointer ${
+                          isActive 
+                            ? 'bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30 shadow-sm' 
+                            : 'bg-transparent text-neutral-500 hover:text-neutral-300 border border-transparent'
+                        }`}
+                      >
+                        {status} <span className="opacity-60 ml-0.5">({count})</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Search Capsule */}
+                <div className="relative max-w-sm w-full md:w-72">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-neutral-500">
+                    <Search className="w-3.5 h-3.5" />
+                  </span>
+                  <input
+                    type="text"
+                    value={resSearch}
+                    onChange={(e) => setResSearch(e.target.value)}
+                    placeholder="Search guests or requests..."
+                    className="w-full bg-[#111] border border-neutral-800/80 rounded px-3 py-1.5 pl-9 text-xs text-neutral-200 placeholder-neutral-600 focus:outline-none focus:border-[#D4AF37]/50 focus:ring-1 focus:ring-[#D4AF37]/20 transition-all font-sans"
+                  />
+                  {resSearch && (
+                    <button 
+                      onClick={() => setResSearch("")}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-400 hover:text-neutral-200 text-[10px] font-semibold"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+
               <div className="bg-[#242424]/30 border border-[#242424] rounded overflow-x-auto">
                 <table className="w-full text-xs text-left">
                   <thead className="bg-[#242424] text-[9px] uppercase tracking-wider text-neutral-400 border-b border-[#242424]">
@@ -1141,7 +1299,7 @@ The Stewards of the Manifesto`);
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#242424]/40 text-[#F5F5F5]">
-                    {reservations.map((res) => (
+                    {filteredReservations.map((res) => (
                       <tr key={res.id} className="hover:bg-[#242424]/10">
                         <td className="p-4">
                           <p className="font-semibold">{res.name}</p>
@@ -1241,10 +1399,10 @@ The Stewards of the Manifesto`);
                       </tr>
                     ))}
 
-                    {reservations.length === 0 && (
+                    {filteredReservations.length === 0 && (
                       <tr>
-                        <td className="p-8 text-center text-neutral-500 italic col-span-full" colSpan={6}>
-                          No active table reserves currently.
+                        <td className="p-8 text-center text-neutral-500 italic col-span-full" colSpan={7}>
+                          No table reservations matching the search/filter criteria.
                         </td>
                       </tr>
                     )}
@@ -1255,7 +1413,67 @@ The Stewards of the Manifesto`);
 
             {/* Corporate Inquiries Queue */}
             <div className="space-y-4">
-              <h3 className="font-serif text-xl text-[#F5F5F5] border-b border-[#242424] pb-2">Corporate private Hire briefings ({inquiries.length} total)</h3>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#242424] pb-3">
+                <h3 className="font-serif text-xl text-[#F5F5F5]">Corporate private Hire briefings ({inquiries.length} total)</h3>
+                
+                {filteredInquiries.length > 0 && (
+                  <button
+                    onClick={exportInquiriesToCSV}
+                    className="self-start sm:self-auto px-3.5 py-1.5 bg-[#1F1F1F] border border-neutral-800 hover:border-[#D4AF37] text-[10px] uppercase tracking-widest text-[#D4AF37] hover:text-[#F5F5F5] font-bold rounded flex items-center gap-1.5 transition-all cursor-pointer hover:bg-neutral-900"
+                  >
+                    <Download className="w-3.5 h-3.5" /> Export Briefs
+                  </button>
+                )}
+              </div>
+
+              {/* Luxury Filter Controls */}
+              <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-[#161616]/40 p-4 rounded-lg border border-neutral-900 mb-2">
+                {/* Status Pills */}
+                <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
+                  {(['all', 'pending', 'reviewed', 'completed'] as const).map((status) => {
+                    const count = status === 'all' 
+                      ? inquiries.length 
+                      : inquiries.filter(i => i.status === status).length;
+                    const isActive = inqFilter === status;
+                    return (
+                      <button
+                        key={status}
+                        onClick={() => setInqFilter(status)}
+                        className={`px-3 py-1.5 rounded text-[9px] uppercase tracking-wider font-bold transition-all whitespace-nowrap cursor-pointer ${
+                          isActive 
+                            ? 'bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30 shadow-sm' 
+                            : 'bg-transparent text-neutral-500 hover:text-neutral-300 border border-transparent'
+                        }`}
+                      >
+                        {status} <span className="opacity-60 ml-0.5">({count})</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Search Capsule */}
+                <div className="relative max-w-sm w-full md:w-72">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-neutral-500">
+                    <Search className="w-3.5 h-3.5" />
+                  </span>
+                  <input
+                    type="text"
+                    value={inqSearch}
+                    onChange={(e) => setInqSearch(e.target.value)}
+                    placeholder="Search companies or briefings..."
+                    className="w-full bg-[#111] border border-neutral-800/80 rounded px-3 py-1.5 pl-9 text-xs text-neutral-200 placeholder-neutral-600 focus:outline-none focus:border-[#D4AF37]/50 focus:ring-1 focus:ring-[#D4AF37]/20 transition-all font-sans"
+                  />
+                  {inqSearch && (
+                    <button 
+                      onClick={() => setInqSearch("")}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-400 hover:text-neutral-200 text-[10px] font-semibold"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+
               <div className="bg-[#242424]/30 border border-[#242424] rounded overflow-x-auto">
                 <table className="w-full text-xs text-left">
                   <thead className="bg-[#242424] text-[9px] uppercase tracking-wider text-neutral-400 border-b border-[#242424]">
@@ -1270,7 +1488,7 @@ The Stewards of the Manifesto`);
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#242424]/40 text-[#F5F5F5]">
-                    {inquiries.map((inq) => (
+                    {filteredInquiries.map((inq) => (
                       <tr key={inq.id} className="hover:bg-[#242424]/10">
                         <td className="p-4">
                           <p className="font-semibold">{inq.contactName}</p>
@@ -1319,10 +1537,10 @@ The Stewards of the Manifesto`);
                       </tr>
                     ))}
 
-                    {inquiries.length === 0 && (
+                    {filteredInquiries.length === 0 && (
                       <tr>
                         <td className="p-8 text-center text-neutral-500 col-span-full" colSpan={7}>
-                          No corporate inquiries listed currently.
+                          No corporate inquiries matching the search/filter criteria.
                         </td>
                       </tr>
                     )}
