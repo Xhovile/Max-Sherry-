@@ -183,7 +183,7 @@ export default function CorporateView({ createInquiry }: CorporateViewProps) {
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a 
-                  href={`https://wa.me/27825554321?text=Hi%20Max%20%26%20Sherry%2C%20I've%20just%20sent%20a%20private%20hire%20quotation%20request%20MS-INQ-${submittedSuccess.id.split('_')[1]}%20for%20${submittedSuccess.eventType}.%20Please%20advise.`}
+                  href={`https://wa.me/265995700800?text=Hi%20Max%20%26%20Sherry%2C%20I've%20just%20sent%20a%20private%20hire%20quotation%20request%20MS-INQ-${submittedSuccess.id.split('_')[1]}%20for%20${submittedSuccess.eventType}.%20Please%20advise.`}
                   target="_blank"
                   referrerPolicy="no-referrer"
                   className="px-6 py-3 bg-emerald-700 hover:bg-emerald-600 font-sans text-white text-[10px] uppercase tracking-widest font-semibold transition-all flex items-center gap-2"
