@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, Clock, MapPin, Ticket, AlertCircle, Sparkles, ShieldCheck } from 'lucide-react';
 import { Event } from '../types';
+import EventCountdown from './EventCountdown';
 
 interface EventsViewProps {
   events: Event[];
@@ -99,6 +100,9 @@ export default function EventsView({ events, onBookEvent }: EventsViewProps) {
                         <p className="text-[10px] text-[#B0B0B0] mt-0.5 font-light">Max & Sherry Dine & Lounge Estate, New Naperi, Blantyre</p>
                       </div>
                     </div>
+
+                    {/* Urgent Seating Countdown Timer */}
+                    <EventCountdown date={ev.date} time={ev.time} status={ev.status} />
                   </div>
 
                   {/* Pricing and Action Deck */}

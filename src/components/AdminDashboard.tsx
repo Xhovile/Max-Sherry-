@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { 
   Plus, Edit2, Trash2, Check, X, ShieldAlert, Sparkles, 
   UtensilsCrossed, CalendarDays, BookOpen, Image as ImageIcon, 
-  UserSquare2, LayoutTemplate, RotateCw, CheckCheck, RefreshCw 
+  UserSquare2, LayoutTemplate, RotateCw, CheckCheck, RefreshCw,
+  QrCode
 } from 'lucide-react';
 import { MenuItem, Event, Reservation, GalleryItem, Testimonial, CorporateInquiry, HomepageContent } from '../types';
 import ConfirmationDialog from './ConfirmationDialog';
+import AdminQRCodeGenerator from './AdminQRCodeGenerator';
 
 interface AdminDashboardProps {
   homepage: HomepageContent;
@@ -42,7 +44,7 @@ export default function AdminDashboard({
   updateInquiryStatus, deleteInquiry, resetAll
 }: AdminDashboardProps) {
   
-  const [activeAdminTab, setActiveAdminTab] = useState<'content' | 'menu' | 'events' | 'bookings' | 'gallery' | 'reviews'>('content');
+  const [activeAdminTab, setActiveAdminTab] = useState<'content' | 'menu' | 'events' | 'bookings' | 'gallery' | 'reviews' | 'qrcode'>('content');
 
   // Homepage edit mode state
   const [isEditingHome, setIsEditingHome] = useState(false);
@@ -367,7 +369,7 @@ export default function AdminDashboard({
         </div>
 
         {/* Multi-Section Admin Tabs Navigation */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-2 mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 mb-12">
           
           <button 
             onClick={() => setActiveAdminTab('content')}
@@ -427,6 +429,16 @@ export default function AdminDashboard({
           >
             <UserSquare2 className="w-4 h-4" />
             <span>Reviews board</span>
+          </button>
+
+          <button 
+            onClick={() => setActiveAdminTab('qrcode')}
+            className={`py-3.5 px-2 text-center rounded text-[10px] uppercase tracking-widest font-medium transition-all inline-flex flex-col items-center gap-1.5 ${
+              activeAdminTab === 'qrcode' ? 'bg-[#D4AF37] text-[#1A1A1A] font-semibold' : 'bg-[#242424] text-[#B0B0B0] hover:text-[#F5F5F5]'
+            }`}
+          >
+            <QrCode className="w-4 h-4" />
+            <span>Tabletop QR codes</span>
           </button>
 
         </div>
@@ -1355,6 +1367,11 @@ export default function AdminDashboard({
             </div>
 
           </div>
+        )}
+
+        {/* -------------------- SUB TAB: TABLETOP QR CODES -------------------- */}
+        {activeAdminTab === 'qrcode' && (
+          <AdminQRCodeGenerator />
         )}
 
       </div>
