@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, Filter, Sparkles, AlertCircle } from 'lucide-react';
+import { Search, Filter, Sparkles, AlertCircle, Printer } from 'lucide-react';
 import { MenuItem } from '../types';
+import PrintableMenuView from './PrintableMenuView';
 
 interface MenuViewProps {
   menuItems: MenuItem[];
@@ -75,6 +76,7 @@ export default function MenuView({ menuItems, setActiveTab, onBookEvent }: MenuV
   >('all');
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -122,8 +124,14 @@ export default function MenuView({ menuItems, setActiveTab, onBookEvent }: MenuV
             Interactive Menu
           </h1>
           <p className="text-xs md:text-sm text-[#B0B0B0] mt-4 font-light tracking-wide">
-            Strictly no PDFs. Filter our physical daily provisions, hand-aged cuts, and dramatic liquid botanicals below.
+            Strictly no PDFs, unless requested for guest accessibility. Filter our provisions below or generate a custom printable version.
           </p>
+          <button
+            onClick={() => setIsPrintModalOpen(true)}
+            className="mt-5 bg-transparent hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#1A1A1A] border border-[#D4AF37] text-[10px] uppercase tracking-[0.25em] px-5 py-2.5 transition-all duration-300 font-bold flex items-center gap-2 cursor-pointer shadow-md"
+          >
+            <Printer className="w-3.5 h-3.5" /> Generate Printable Menu Card
+          </button>
         </div>
 
         {/* Search and Filters Bar */}
@@ -358,6 +366,12 @@ export default function MenuView({ menuItems, setActiveTab, onBookEvent }: MenuV
         </div>
 
       </div>
+
+      <PrintableMenuView 
+        isOpen={isPrintModalOpen} 
+        onClose={() => setIsPrintModalOpen(false)} 
+        menuItems={menuItems} 
+      />
     </div>
   );
 }
